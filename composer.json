@@ -2,6 +2,14 @@
     "name": "beotie/core_bundle",
     "description": "This package is the base core bundle of beotie, with symfony integration",
     "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "matthieu vallance",
+            "email": "matthieu.vallance@cscfa.fr"
+        }
+    ],
+    "minimum-stability": "dev",
     "require": {
         "symfony/http-kernel": "^3.3@stable",
         "symfony/framework-bundle": "^3.3@stable",
@@ -17,14 +25,6 @@
         "sebastian/phpcpd": "^3.0@stable",
         "phpmetrics/phpmetrics": "^2.2@stable"
     },
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "matthieu vallance",
-            "email": "matthieu.vallance@cscfa.fr"
-        }
-    ],
-    "minimum-stability": "dev",
 	"autoload" : {
 		"psr-4" : {
 			"Beotie\\CoreBundle\\" : "CoreBundle"

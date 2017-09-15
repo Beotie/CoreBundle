@@ -1,5 +1,19 @@
 <?php
-
+declare(strict_types=1);
+/**
+ * This file is part of beotie/core_bundle
+ *
+ * As each files provides by the CSCFA, this file is licensed
+ * under the MIT license.
+ *
+ * PHP version 7.1
+ *
+ * @category DependencyInjection
+ * @package  Beotie_Core_Bundle
+ * @author   matthieu vallance <matthieu.vallance@cscfa.fr>
+ * @license  MIT <https://opensource.org/licenses/MIT>
+ * @link     http://cscfa.fr
+ */
 namespace Beotie\CoreBundle\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -8,14 +22,28 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader;
 
 /**
- * This is the class that loads and manages your bundle configuration.
+ * Beotie core extension
  *
- * @link http://symfony.com/doc/current/cookbook/bundles/extension.html
+ * This is the class that loads and manages the BeotieCoreBundle
+ *
+ * @category DependencyInjection
+ * @package  Beotie_Core_Bundle
+ * @author   matthieu vallance <matthieu.vallance@cscfa.fr>
+ * @license  MIT <https://opensource.org/licenses/MIT>
+ * @link     http://cscfa.fr
  */
 class BeotieCoreExtension extends Extension
 {
     /**
-     * {@inheritdoc}
+     * Load
+     *
+     * Loads a specific configuration.
+     *
+     * @param array            $configs   An array of configuration values
+     * @param ContainerBuilder $container A ContainerBuilder instance
+     *
+     * @return void
+     * @throws \InvalidArgumentException When provided tag is not defined in this extension
      */
     public function load(array $configs, ContainerBuilder $container)
     {
