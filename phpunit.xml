@@ -12,6 +12,8 @@
             <directory>CoreBundle/Tests</directory>
         </testsuite>
         <testsuite name="unitTest">
+            <directory>CoreBundle/Tests/DependencyInjection/BeotieCoreExtensionTest.php</directory>
+            <directory>CoreBundle/Tests/DependencyInjection/ConfigurationTest.php</directory>
         </testsuite>
         <testsuite name="fonctional">
         </testsuite>
