@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 /**
- * This file is part of beotie/user_bundle
+ * This file is part of beotie/core_bundle
  *
  * As each files provides by the CSCFA, this file is licensed
  * under the MIT license.

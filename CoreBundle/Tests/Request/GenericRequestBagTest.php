@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 /**
- * This file is part of beotie/user_bundle
+ * This file is part of beotie/core_bundle
  *
  * As each files provides by the CSCFA, this file is licensed
  * under the MIT license.
@@ -14,7 +14,7 @@ declare(strict_types=1);
  * @license  MIT <https://opensource.org/licenses/MIT>
  * @link     http://cscfa.fr
  */
-namespace Tests;
+namespace Beotie\CoreBundle\Tests\Request\Tests;
 
 use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
 use Beotie\CoreBundle\Request\GenericRequestBag;

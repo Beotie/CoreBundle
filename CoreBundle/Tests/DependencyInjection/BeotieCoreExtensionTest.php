@@ -14,7 +14,7 @@ declare(strict_types=1);
  * @license  MIT <https://opensource.org/licenses/MIT>
  * @link     http://cscfa.fr
  */
-namespace Tests\DependencyInjection;
+namespace Beotie\CoreBundle\Tests\DependencyInjection;
 
 use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
 use Beotie\CoreBundle\DependencyInjection\BeotieCoreExtension;
@@ -36,7 +36,7 @@ class BeotieCoreExtensionTest extends TestCase
     /**
      * Test load
      *
-     * This method validate the BeotieUserExtension::load method
+     * This method validate the BeotieCoreExtension::load method
      *
      * @return void
      */

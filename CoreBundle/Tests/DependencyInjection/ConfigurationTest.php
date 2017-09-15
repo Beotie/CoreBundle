@@ -14,7 +14,7 @@ declare(strict_types=1);
  * @license  MIT <https://opensource.org/licenses/MIT>
  * @link     http://cscfa.fr
  */
-namespace Beotie\UserBundle\Tests\DependencyInjection;
+namespace Beotie\CoreBundle\Tests\DependencyInjection;
 
 use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
 use Beotie\CoreBundle\DependencyInjection\Configuration;
