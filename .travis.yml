@@ -2,4 +2,5 @@ language: php
 dist: trusty
 php:
     - "7.1"
+install: "composer install"
 script: "./test.sh"
