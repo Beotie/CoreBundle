@@ -1,9 +1,35 @@
 <?php
+declare(strict_types=1);
+/**
+ * This file is part of beotie/core_bundle
+ *
+ * As each files provides by the CSCFA, this file is licensed
+ * under the MIT license.
+ *
+ * PHP version 7.1
+ *
+ * @category Model
+ * @package  Beotie_Core_Bundle
+ * @author   matthieu vallance <matthieu.vallance@cscfa.fr>
+ * @license  MIT <https://opensource.org/licenses/MIT>
+ * @link     http://cscfa.fr
+ */
 namespace Beotie\CoreBundle\Model\DataTransfertObject\Exception;
 
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 
+/**
+ * Unvalidated DTO
+ *
+ * This class is used to throw exception in case of unvalidated DTO
+ *
+ * @category Model
+ * @package  Beotie_Core_Bundle
+ * @author   matthieu vallance <matthieu.vallance@cscfa.fr>
+ * @license  MIT <https://opensource.org/licenses/MIT>
+ * @link     http://cscfa.fr
+ */
 class UnvalidatedDto extends \RuntimeException
 {
     /**
@@ -43,17 +69,17 @@ class UnvalidatedDto extends \RuntimeException
         string $message = '',
         $code = 0,
         $previous = null
-        ) {
+    ) {
             $this->violations = $violations;
             $this->dto = $dto;
 
             $violationMessages = '';
-            if (!empty($violations)) {
-                $violationMessages = [];
-                foreach ($violations as $violation) {
-                    $violationMessages[] = $this->violationToString($violation);
-                }
+        if (!empty($violations)) {
+            $violationMessages = [];
+            foreach ($violations as $violation) {
+                $violationMessages[] = $this->violationToString($violation);
             }
+        }
 
             parent::__construct(sprintf('%s [%s]', $message, implode(', ', $violationMessages)), $code, $previous);
     }
@@ -97,4 +123,3 @@ class UnvalidatedDto extends \RuntimeException
         return $violation->getMessage();
     }
 }
-
