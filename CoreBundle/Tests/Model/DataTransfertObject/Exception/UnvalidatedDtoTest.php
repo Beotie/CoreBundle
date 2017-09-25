@@ -16,10 +16,10 @@ declare(strict_types=1);
  */
 namespace Beotie\CoreBundle\Tests\Model\DataTransfertObject\Exception;
 
-use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\ConstraintViolationList;
 use Beotie\CoreBundle\Model\DataTransfertObject\Exception\UnvalidatedDto;
+use PHPUnit\Framework\TestCase;
 
 /**
  * UnvalidatedDto test

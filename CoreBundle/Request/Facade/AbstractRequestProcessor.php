@@ -36,69 +36,6 @@ use Beotie\CoreBundle\Request\Event\Factory\RequestEventFactoryInterface;
 abstract class AbstractRequestProcessor implements RequestProcessorInterface
 {
     /**
-     * Event getResources
-     *
-     * This constant is used as dispatch event name to process a multiple resource loading request
-     *
-     * @var string
-     */
-    const EVENT_GET_RESOURCES = 'event_get_resources';
-
-    /**
-     * Event getResource
-     *
-     * This constant is used as dispatch event name to process a resource loading request
-     *
-     * @var string
-     */
-    const EVENT_GET_RESOURCE = 'event_get_resource';
-
-    /**
-     * Event postResources
-     *
-     * This constant is used as dispatch event name to process a multiple resource creation request
-     *
-     * @var string
-     */
-    const EVENT_POST_RESOURCES = 'event_post_resources';
-
-    /**
-     * Event postResource
-     *
-     * This constant is used as dispatch event name to process a resource creation request
-     *
-     * @var string
-     */
-    const EVENT_POST_RESOURCE = 'event_post_resource';
-
-    /**
-     * Event putResource
-     *
-     * This constant is used as dispatch event name to process a resource replacement request
-     *
-     * @var string
-     */
-    const EVENT_PUT_RESOURCE = 'event_put_resource';
-
-    /**
-     * Event patchResource
-     *
-     * This constant is used as dispatch event name to process a resource partial modification request
-     *
-     * @var string
-     */
-    const EVENT_PATCH_RESOURCE = 'event_patch_resource';
-
-    /**
-     * Event deleteResource
-     *
-     * This constant is used as dispatch event name to process a resource deletion request
-     *
-     * @var string
-     */
-    const EVENT_DELETE_RESOURCE = 'event_delete_resource';
-
-    /**
      * ResponseBag factory
      *
      * This property store a ResponseBagFactory instance to generate the process responses

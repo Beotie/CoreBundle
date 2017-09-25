@@ -18,6 +18,7 @@ namespace Beotie\CoreBundle\Request\Event;
 
 use Beotie\CoreBundle\Request\RequestBagInterface;
 use Beotie\CoreBundle\Response\ResponseBagInterface;
+use Beotie\CoreBundle\Event\EventInterface;
 
 /**
  * Request event interface
@@ -30,30 +31,8 @@ use Beotie\CoreBundle\Response\ResponseBagInterface;
  * @license  MIT <https://opensource.org/licenses/MIT>
  * @link     http://cscfa.fr
  */
-interface RequestEventInterface
+interface RequestEventInterface extends EventInterface
 {
-    /**
-     * Is propagation stopped
-     *
-     * Returns whether further event listeners should be triggered.
-     *
-     * @return bool
-     */
-    public function isPropagationStopped();
-
-    /**
-     * Stop propagation
-     *
-     * Stops the propagation of the event to further event listeners.
-     *
-     * If multiple event listeners are connected to the same event, no
-     * further event listener will be triggered once any trigger calls
-     * stopPropagation().
-     *
-     * @return void
-     */
-    public function stopPropagation();
-
     /**
      * Get request
      *

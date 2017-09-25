@@ -8,7 +8,7 @@ declare(strict_types=1);
  *
  * PHP version 7.1
  *
- * @category Request
+ * @category Response
  * @package  Beotie_Core_Bundle
  * @author   matthieu vallance <matthieu.vallance@cscfa.fr>
  * @license  MIT <https://opensource.org/licenses/MIT>
@@ -24,7 +24,7 @@ use Beotie\CoreBundle\Response\ResponseBagInterface;
  *
  * This class is used to create GenericResponseBag instance
  *
- * @category Model
+ * @category Response
  * @package  Beotie_Core_Bundle
  * @author   matthieu vallance <matthieu.vallance@cscfa.fr>
  * @license  MIT <https://opensource.org/licenses/MIT>
@@ -32,6 +32,44 @@ use Beotie\CoreBundle\Response\ResponseBagInterface;
  */
 class GenericResponseBagFactory implements ResponseBagFactoryInterface
 {
+    /**
+     * Error bag factory
+     *
+     * This property store the ResponseErrorBagFactory instance to create a new ResponseErrorBag to be injected
+     * into the GenericResponseBag.
+     *
+     * @var ResponseErrorBagFactoryInterface
+     */
+    private $errorBagFactory;
+
+    /**
+     * Data bag factory
+     *
+     * This property store the ResponseDataBagFactory instance to create a new ResponseDataBag to be injected
+     * into the GenericResponseBag
+     *
+     * @var ResponseDataBagFactoryInterface
+     */
+    private $dataBagFactory;
+
+    /**
+     * Construct
+     *
+     * The default GenericResponseBagFactory constructor
+     *
+     * @param ResponseErrorBagFactoryInterface $errorBagFactory The error bag factory
+     * @param ResponseDataBagFactoryInterface  $dataBagFactory  The data bag factory
+     *
+     * @return void
+     */
+    public function __construct(
+        ResponseErrorBagFactoryInterface $errorBagFactory,
+        ResponseDataBagFactoryInterface $dataBagFactory
+    ) {
+        $this->errorBagFactory = $errorBagFactory;
+        $this->dataBagFactory = $dataBagFactory;
+    }
+
     /**
      * Get ResponseBag
      *
@@ -41,6 +79,9 @@ class GenericResponseBagFactory implements ResponseBagFactoryInterface
      */
     public function getResponseBag() : ResponseBagInterface
     {
-        return new GenericResponseBag();
+        return new GenericResponseBag(
+            $this->errorBagFactory->getResponseErrorBag(),
+            $this->dataBagFactory->getResponseDataBag()
+        );
     }
 }

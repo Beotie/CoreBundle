@@ -16,6 +16,9 @@ declare(strict_types=1);
  */
 namespace Beotie\CoreBundle\Response;
 
+use Beotie\CoreBundle\Response\Error\ResponseErrorBagInterface;
+use Beotie\CoreBundle\Response\Data\ResponseDataBagInterface;
+
 /**
  * Response bag interface
  *
@@ -29,4 +32,21 @@ namespace Beotie\CoreBundle\Response;
  */
 interface ResponseBagInterface
 {
+    /**
+     * Get error bag
+     *
+     * This method return the error bag of the response bag
+     *
+     * @return ResponseErrorBagInterface
+     */
+    public function getErrorBag() : ResponseErrorBagInterface;
+
+    /**
+     * Get data bag
+     *
+     * This method return the data bag of the response bag
+     *
+     * @return ResponseDataBagInterface
+     */
+    public function getDataBag() : ResponseDataBagInterface;
 }

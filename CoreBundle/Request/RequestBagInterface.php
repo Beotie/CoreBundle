@@ -30,64 +30,11 @@ namespace Beotie\CoreBundle\Request;
 interface RequestBagInterface
 {
     /**
-     * Get request params
+     * Get data
      *
-     * This method return the request parameters as array
-     *
-     * @return array
-     */
-    public function getRequestParams() : array;
-
-    /**
-     * Has request parameter
-     *
-     * This method validate the existance of a parameter
-     *
-     * @param string $paramName The parameter name
-     *
-     * @return bool
-     */
-    public function hasRequestParam(string $paramName) : bool;
-
-    /**
-     * Get request parameter
-     *
-     * This method return an existing parameter by name, or null if it not exist
-     *
-     * @param string $paramName The parameter name
+     * This method return the request data
      *
      * @return mixed|null
      */
-    public function getRequestParam(string $paramName);
-
-    /**
-     * Get request options
-     *
-     * This method return the request options as array
-     *
-     * @return array
-     */
-    public function getRequestOptions() : array;
-
-    /**
-     * Has request option
-     *
-     * This method validate the existance of a option
-     *
-     * @param string $optionName The option name
-     *
-     * @return bool
-     */
-    public function hasRequestOption(string $optionName) : bool;
-
-    /**
-     * Get request option
-     *
-     * This method return an existing option by name, or null if it not exist
-     *
-     * @param string $optionName The option name
-     *
-     * @return mixed|null
-     */
-    public function getRequestOption(string $optionName);
+    public function getData();
 }

@@ -17,7 +17,9 @@
         "symfony/dependency-injection": "^3.3@stable",
         "symfony/config": "^3.3@stable",
         "symfony/yaml": "^3.3@stable",
-		"symfony/validator" : "^3.3@stable"
+		"symfony/validator" : "^3.3@stable",
+		"doctrine/common" : "^2.8@stable",
+        "psr/http-message": "^1.0@stable"
     },
     "require-dev": {
         "phpunit/phpunit": "^6.3@stable",

@@ -16,9 +16,9 @@ declare(strict_types=1);
  */
 namespace Beotie\CoreBundle\Tests\DependencyInjection;
 
-use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
 use Beotie\CoreBundle\DependencyInjection\Configuration;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Configuration test

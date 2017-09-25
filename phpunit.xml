@@ -14,6 +14,33 @@
         <testsuite name="unitTest">
             <directory>CoreBundle/Tests/DependencyInjection/BeotieCoreExtensionTest.php</directory>
             <directory>CoreBundle/Tests/DependencyInjection/ConfigurationTest.php</directory>
+            
+            <directory>CoreBundle/Tests/Model/DataTransfertObject/Exception/UnvalidatedDtoTest.php</directory>
+            <directory>CoreBundle/Tests/Model/Mediator/Resolver/GenericDataMediatorResolverTest.php</directory>
+            
+            <directory>CoreBundle/Tests/Request/Event/Factory/RequestEventFactoryTest.php</directory>
+            <directory>CoreBundle/Tests/Request/Event/RequestEventTest.php</directory>
+            <directory>CoreBundle/Tests/Request/Facade/AbstractRequestProcessorTest.php</directory>
+            <directory>CoreBundle/Tests/Request/GenericRequestBagTest.php</directory>
+            
+            <directory>CoreBundle/Tests/Response/Factory/GenericResponseBagFactoryTest.php</directory>
+            <directory>CoreBundle/Tests/Response/Factory/GenericResponseDataBagFactoryTest.php</directory>
+            <directory>CoreBundle/Tests/Response/Factory/GenericResponseDataFactoryTest.php</directory>
+            <directory>CoreBundle/Tests/Response/Factory/GenericResponseErrorBagFactoryTest.php</directory>
+            <directory>CoreBundle/Tests/Response/Factory/GenericResponseErrorFactoryTest.php</directory>
+            <directory>CoreBundle/Tests/Response/GenericResponseBagTest.php</directory>
+            <directory>CoreBundle/Tests/Response/Data/GenericResponseDataTest.php</directory>
+            <directory>CoreBundle/Tests/Response/Data/GenericResponseDataBagTest.php</directory>
+            <directory>CoreBundle/Tests/Response/Error/GenericResponseErrorBagTest.php</directory>
+            <directory>CoreBundle/Tests/Response/Error/GenericResponseErrorTest.php</directory>
+            
+            <directory>CoreBundle/Tests/Subscriber/ModelGeneratorEvent/ModelGeneratorEventTest.php</directory>
+            <directory>CoreBundle/Tests/Subscriber/GenericModelGeneratorTest.php</directory>
+            <directory>CoreBundle/Tests/Subscriber/GenericDataValidatorTest.php</directory>
+            <directory>CoreBundle/Tests/Subscriber/GenericModelFactoryTest.php</directory>
+            <directory>CoreBundle/Tests/Subscriber/GenericModelPersisterTest.php</directory>
+            <directory>CoreBundle/Tests/Subscriber/GenericResponseDataAdderTest.php</directory>
+            <directory>CoreBundle/Tests/Subscriber/GenericResponseErrorAdderTest.php</directory>
         </testsuite>
         <testsuite name="fonctional">
         </testsuite>

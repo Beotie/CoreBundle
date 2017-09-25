@@ -16,9 +16,13 @@ declare(strict_types=1);
  */
 namespace Beotie\CoreBundle\Tests\Response\Factory;
 
-use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
 use Beotie\CoreBundle\Response\Factory\GenericResponseBagFactory;
 use Beotie\CoreBundle\Response\GenericResponseBag;
+use Beotie\CoreBundle\Response\Factory\ResponseErrorBagFactoryInterface;
+use Beotie\CoreBundle\Response\Error\ResponseErrorBagInterface;
+use Beotie\CoreBundle\Response\Factory\ResponseDataBagFactoryInterface;
+use Beotie\CoreBundle\Response\Data\ResponseDataBagInterface;
+use PHPUnit\Framework\TestCase;
 
 /**
  * GenericResponseBagFactory test
@@ -42,7 +46,17 @@ class GenericResponseBagFactoryTest extends TestCase
      */
     public function testGetResponseBag()
     {
-        $instance = new GenericResponseBagFactory();
+        $errorBagFactory = $this->createMock(ResponseErrorBagFactoryInterface::class);
+        $errorBagFactory->expects($this->once())
+            ->method('getResponseErrorBag')
+            ->willReturn($this->createMock(ResponseErrorBagInterface::class));
+
+        $dataBagFactory = $this->createMock(ResponseDataBagFactoryInterface::class);
+        $dataBagFactory->expects($this->once())
+            ->method('getResponseDataBag')
+            ->willReturn($this->createMock(ResponseDataBagInterface::class));
+
+        $instance = new GenericResponseBagFactory($errorBagFactory, $dataBagFactory);
 
         $this->assertInstanceOf(GenericResponseBag::class, $instance->getResponseBag());
     }

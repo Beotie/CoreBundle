@@ -17,6 +17,7 @@ declare(strict_types=1);
 namespace Beotie\CoreBundle\Model\Factory;
 
 use Beotie\CoreBundle\Model\DataTransfertObject\Exception\UnvalidatedDto;
+use Symfony\Component\Validator\ConstraintViolationListInterface;
 
 /**
  * Model factory interface
@@ -53,4 +54,15 @@ interface ModelFactoryInterface
      * @return bool
      */
     public function isValid($dataTransferObject) : bool;
+
+    /**
+     * Get validation errors
+     *
+     * This method return the validations errors a constraint violation list
+     *
+     * @param object $dataTransferObject The invalid DTO
+     *
+     * @return ConstraintViolationListInterface
+     */
+    public function getValidationErrors($dataTransferObject) : ConstraintViolationListInterface;
 }

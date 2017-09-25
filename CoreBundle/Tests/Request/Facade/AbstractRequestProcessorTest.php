@@ -16,7 +16,6 @@ declare(strict_types=1);
  */
 namespace Beotie\CoreBundle\Tests\Request\Facade;
 
-use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
 use Beotie\CoreBundle\Response\Factory\ResponseBagFactoryInterface;
 use Beotie\CoreBundle\Request\Event\Factory\RequestEventFactoryInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -24,6 +23,7 @@ use Beotie\CoreBundle\Request\Facade\AbstractRequestProcessor;
 use Beotie\CoreBundle\Request\Event\RequestEventInterface;
 use Beotie\CoreBundle\Request\RequestBagInterface;
 use Beotie\CoreBundle\Request\Event\RequestEvent;
+use PHPUnit\Framework\TestCase;
 
 /**
  * AbstractRequestProcessor test

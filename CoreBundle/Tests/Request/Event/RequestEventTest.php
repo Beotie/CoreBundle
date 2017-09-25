@@ -16,10 +16,10 @@ declare(strict_types=1);
  */
 namespace Beotie\CoreBundle\Tests\Request\Event;
 
-use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
 use Beotie\CoreBundle\Request\Event\RequestEvent;
 use Beotie\CoreBundle\Request\RequestBagInterface;
 use Beotie\CoreBundle\Response\ResponseBagInterface;
+use PHPUnit\Framework\TestCase;
 
 /**
  * RequestEvent test
