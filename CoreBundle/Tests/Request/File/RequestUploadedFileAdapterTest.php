@@ -342,7 +342,7 @@ class RequestUploadedFileAdapterTest extends TestCase
     {
         $directory = sys_get_temp_dir();
         $file = 'test.xml';
-        $target = $directory . DIRECTORY_SEPARATOR . $file;
+        $target = $directory.DIRECTORY_SEPARATOR.$file;
 
         $uploadedFile = $this->createMock(UploadedFile::class);
         $uploadedFile->expects($this->once())
