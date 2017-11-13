@@ -58,7 +58,8 @@ class RequestUploadedFileFactoryTest extends TestCase
      *
      * This method is used to validate the FileInfoStreamFactory::getUploadFile method
      *
-     * @return void
+     * @return                               void
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function testGetUploadFile() : void
     {
@@ -77,7 +78,8 @@ class RequestUploadedFileFactoryTest extends TestCase
      *
      * This method is used to validate the FileInfoStreamFactory::getUploadFile method in case of wrong type usage
      *
-     * @return void
+     * @return                               void
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function testGetUploadedFileTypeError() : void
     {
