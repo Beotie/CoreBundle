@@ -16,8 +16,10 @@ declare(strict_types=1);
  */
 namespace Beotie\CoreBundle\Request\File\Factory;
 
-use Psr\Http\Message\UploadedFileInterface;
 use Beotie\CoreBundle\Request\File\RequestUploadedFileAdapter;
+use Beotie\CoreBundle\Stream\Factory\AbstractEmbeddedStreamFactory;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Psr\Http\Message\UploadedFileInterface;
 
 /**
  * Request uploaded file factory
@@ -42,6 +44,15 @@ class RequestUploadedFileFactory implements EmbeddedFileFactoryInterface
     protected const ARRAY_KEY = 'inner_content';
 
     /**
+     * Stream factory
+     *
+     * The request uploaded file adapter stream factory
+     *
+     * @var AbstractEmbeddedStreamFactory
+     */
+    private $streamFactory;
+
+    /**
      * Get array key
      *
      * This method return the expected array key to retreive the embedded content
@@ -51,6 +62,20 @@ class RequestUploadedFileFactory implements EmbeddedFileFactoryInterface
     public static function getArrayKey() : string
     {
         return self::ARRAY_KEY;
+    }
+
+    /**
+     * Construct
+     *
+     * The default RequestUploadedFileFactory constructor
+     *
+     * @param AbstractEmbeddedStreamFactory $streamFactory The request uploaded file adapter stream factory
+     *
+     * @return void
+     */
+    public function __construct(AbstractEmbeddedStreamFactory $streamFactory)
+    {
+        $this->streamFactory = $streamFactory;
     }
 
     /**
@@ -66,9 +91,10 @@ class RequestUploadedFileFactory implements EmbeddedFileFactoryInterface
      */
     public function getUploadFile(array $params = []) : UploadedFileInterface
     {
-        if ($this->paramHasContent($params) && $this->contentIsUploadedFile($params[self::ARRAY_KEY])) {
-            return new RequestUploadedFileAdapter($params[self::ARRAY_KEY]);
-        }
+        $this->paramHasContent($params);
+        $this->contentIsUploadedFile($params[self::ARRAY_KEY]);
+
+        return new RequestUploadedFileAdapter($params[self::ARRAY_KEY], $this->streamFactory);
     }
 
     /**
@@ -108,15 +134,15 @@ class RequestUploadedFileFactory implements EmbeddedFileFactoryInterface
      * @throws \RuntimeException If the given content does not match the expected type
      * @return bool
      */
-    protected function contentIsUploadedFile($file, string $method = 'getStream') : bool
+    protected function contentIsUploadedFile($file, string $method = 'getUploadFile') : bool
     {
-        if (! $file instanceof UploadedFileInterface) {
+        if (! $file instanceof UploadedFile) {
             throw new \RuntimeException(
                 sprintf(
                     'The "%s::%s" expect the file array key to be an instance of "%s". "%s" given',
                     static::class,
                     $method,
-                    UploadedFileInterface::class,
+                    UploadedFile::class,
                     (is_object($file) ? get_class($file) : gettype($file))
                 )
             );
