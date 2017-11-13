@@ -17,6 +17,7 @@ declare(strict_types=1);
 namespace Beotie\CoreBundle\Request\HttpComponent;
 
 use Symfony\Component\HttpFoundation\Request;
+use Beotie\CoreBundle\Request\HttpRequestServerAdapter;
 
 /**
  * Attribute component
@@ -31,8 +32,6 @@ use Symfony\Component\HttpFoundation\Request;
  */
 trait AttributeComponent
 {
-    use DuplicationComponent;
-
     /**
      * Http request
      *
@@ -123,4 +122,15 @@ trait AttributeComponent
     {
         return $this->httpRequest->attributes->all();
     }
+
+    /**
+     * Duplicate
+     *
+     * This method duplicate the current inner request and override the specified parameters
+     *
+     * @param array $param The parameters to override
+     *
+     * @return HttpRequestServerAdapter
+     */
+    protected abstract function duplicate(array $param = []) : HttpRequestServerAdapter;
 }

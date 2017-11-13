@@ -17,6 +17,7 @@ declare(strict_types=1);
 namespace Beotie\CoreBundle\Request\HttpComponent;
 
 use Symfony\Component\HttpFoundation\Request;
+use Beotie\CoreBundle\Request\HttpRequestServerAdapter;
 
 /**
  * Header component
@@ -31,8 +32,6 @@ use Symfony\Component\HttpFoundation\Request;
  */
 trait HeaderComponent
 {
-    use DuplicationComponent;
-
     /**
      * Http request
      *
@@ -230,4 +229,15 @@ trait HeaderComponent
     {
         return $this->duplicate(['server' => [$name => $value]]);
     }
+
+    /**
+     * Duplicate
+     *
+     * This method duplicate the current inner request and override the specified parameters
+     *
+     * @param array $param The parameters to override
+     *
+     * @return HttpRequestServerAdapter
+     */
+    protected abstract function duplicate(array $param = []) : HttpRequestServerAdapter;
 }

@@ -19,8 +19,8 @@ namespace Beotie\CoreBundle\Request;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UriInterface;
 use Symfony\Component\HttpFoundation\Request;
-use CoreBundle\Request\File\Factory\EmbeddedFileFactoryInterface;
-use CoreBundle\Request\HttpComponent as Component;
+use Beotie\CoreBundle\Request\File\Factory\EmbeddedFileFactoryInterface;
+use Beotie\CoreBundle\Request\HttpComponent as Component;
 
 /**
  * Http request server adapter
