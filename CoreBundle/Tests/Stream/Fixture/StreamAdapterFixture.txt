@@ -1,0 +1,2 @@
+stream:
+	streamContent: 'This is a test file'
