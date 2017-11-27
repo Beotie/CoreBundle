@@ -197,7 +197,7 @@ class StringUri implements UriInterface, PortMappingInterface
         $result .= $this->getHost();
 
         $port = $this->getPort();
-        if ($port !== $this->getStandardSchemePort($this->scheme)) {
+        if (!empty($port)) {
             $result .= sprintf(':%d', $port);
         }
 
@@ -233,8 +233,29 @@ class StringUri implements UriInterface, PortMappingInterface
     public function __toString()
     {}
 
+    /**
+     * Retrieve the port component of the URI.
+     *
+     * If a port is present, and it is non-standard for the current scheme,
+     * this method MUST return it as an integer. If the port is the standard port
+     * used with the current scheme, this method SHOULD return null.
+     *
+     * If no port is present, and no scheme is present, this method MUST return
+     * a null value.
+     *
+     * If no port is present, but a scheme is present, this method MAY return
+     * the standard port for that scheme, but SHOULD return null.
+     *
+     * @return null|int The URI port.
+     */
     public function getPort()
-    {}
+    {
+        if ($this->port !== $this->getStandardSchemePort($this->scheme)) {
+            return intval($this->port);
+        }
+
+        return null;
+    }
 
     public function withUserInfo($user, $password = null)
     {}
