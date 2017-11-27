@@ -66,8 +66,32 @@ class StringUri implements UriInterface, PortMappingInterface
         return $this->duplicateWith('scheme', strtolower($scheme));
     }
 
+    /**
+     * Return an instance with the specified path.
+     *
+     * This method MUST retain the state of the current instance, and return
+     * an instance that contains the specified path.
+     *
+     * The path can either be empty or absolute (starting with a slash) or
+     * rootless (not starting with a slash). Implementations MUST support all
+     * three syntaxes.
+     *
+     * If the path is intended to be domain-relative rather than path relative then
+     * it must begin with a slash ("/"). Paths not starting with a slash ("/")
+     * are assumed to be relative to some base path known to the application or
+     * consumer.
+     *
+     * Users can provide both encoded and decoded path characters.
+     * Implementations ensure the correct encoding as outlined in getPath().
+     *
+     * @param string $path The path to use with the new instance.
+     * @return static A new instance with the specified path.
+     * @throws \InvalidArgumentException for invalid paths.
+     */
     public function withPath($path)
-    {}
+    {
+        return $this->duplicateWith('path', $path);
+    }
 
     public function withQuery($query)
     {}
@@ -111,7 +135,7 @@ class StringUri implements UriInterface, PortMappingInterface
     public function getQuery()
     {}
 
-    private function duplicateWith(string $property, $value)
+    private function duplicateWith(string $property, $value) : StringUri
     {
         $instance = clone $this;
         $instance->{$property} = $value;
