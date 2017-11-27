@@ -174,6 +174,7 @@ class StringUri implements UriInterface, PortMappingInterface
      * Implementations ensure the correct encoding as outlined in getPath().
      *
      * @param string $path The path to use with the new instance.
+     *
      * @return static A new instance with the specified path.
      * @throws \InvalidArgumentException for invalid paths.
      */
@@ -194,6 +195,7 @@ class StringUri implements UriInterface, PortMappingInterface
      * An empty query string value is equivalent to removing the query string.
      *
      * @param string $query The query string to use with the new instance.
+     *
      * @return static A new instance with the specified query string.
      * @throws \InvalidArgumentException for invalid query strings.
      */
@@ -213,7 +215,7 @@ class StringUri implements UriInterface, PortMappingInterface
      * The trailing ":" character is not part of the scheme and MUST NOT be
      * added.
      *
-     * @see https://tools.ietf.org/html/rfc3986#section-3.1
+     * @see    https://tools.ietf.org/html/rfc3986#section-3.1
      * @return string The URI scheme.
      */
     public function getScheme()
@@ -233,6 +235,7 @@ class StringUri implements UriInterface, PortMappingInterface
      * An empty fragment value is equivalent to removing the fragment.
      *
      * @param string $fragment The fragment to use with the new instance.
+     *
      * @return static A new instance with the specified fragment.
      */
     public function withFragment($fragment)
@@ -249,6 +252,7 @@ class StringUri implements UriInterface, PortMappingInterface
      * An empty host value is equivalent to removing the host.
      *
      * @param string $host The hostname to use with the new instance.
+     *
      * @return static A new instance with the specified host.
      * @throws \InvalidArgumentException for invalid hostnames.
      */
@@ -272,7 +276,7 @@ class StringUri implements UriInterface, PortMappingInterface
      * If the port component is not set or is the standard port for the current
      * scheme, it SHOULD NOT be included.
      *
-     * @see https://tools.ietf.org/html/rfc3986#section-3.2
+     * @see    https://tools.ietf.org/html/rfc3986#section-3.2
      * @return string The URI authority, in "[user-info@]host[:port]" format.
      */
     public function getAuthority()
@@ -306,7 +310,8 @@ class StringUri implements UriInterface, PortMappingInterface
      * information.
      *
      * @param null|int $port The port to use with the new instance; a null value
-     *     removes the port information.
+     *                       removes the port information.
+     *
      * @return static A new instance with the specified port.
      * @throws \InvalidArgumentException for invalid ports.
      */
@@ -339,7 +344,7 @@ class StringUri implements UriInterface, PortMappingInterface
      * - If a query is present, it MUST be prefixed by "?".
      * - If a fragment is present, it MUST be prefixed by "#".
      *
-     * @see http://tools.ietf.org/html/rfc3986#section-4.1
+     * @see    http://tools.ietf.org/html/rfc3986#section-4.1
      * @return string
      */
     public function __toString()
@@ -352,76 +357,6 @@ class StringUri implements UriInterface, PortMappingInterface
             $this->getQuery(),
             $this->getFragment()
         );
-    }
-
-    /**
-     * Get authority part
-     *
-     * This method return the authority part of the url.
-     *
-     * @return string|NULL|number
-     */
-    private function getAuthorityPart()
-    {
-        $hostPart = '';
-        if (!empty($this->scheme)) {
-            $hostPart .= '//';
-        }
-
-        $hostPart .= $this->getAuthority();
-
-        return $hostPart;
-    }
-
-    /**
-     * Get port element
-     *
-     * This method return the port element of the url
-     *
-     * @return string|NULL|number
-     */
-    private function getPortElement()
-    {
-        $port = $this->getPort();
-        if (!empty($userInfo)) {
-            $port = sprintf(':%d', $port);
-        }
-
-        return $port;
-    }
-
-    /**
-     * Get user info element
-     *
-     * This method return the user info element of the url
-     *
-     * @return string
-     */
-    private function getUserInfoElement() : string
-    {
-        $userInfo = $this->getUserInfo();
-        if (!empty($userInfo)) {
-            $userInfo .= '@';
-        }
-
-        return $userInfo;
-    }
-
-    /**
-     * Get scheme element
-     *
-     * This method return the scheme element of the url
-     *
-     * @return string
-     */
-    private function getSchemeElement() : string
-    {
-        $scheme = $this->scheme;
-        if (!empty($scheme)) {
-            $scheme .= ':';
-        }
-
-        return $scheme;
     }
 
     /**
@@ -458,8 +393,9 @@ class StringUri implements UriInterface, PortMappingInterface
      * user; an empty string for the user is equivalent to removing user
      * information.
      *
-     * @param string $user The user name to use for authority.
+     * @param string      $user     The user name to use for authority.
      * @param null|string $password The password associated with $user.
+     *
      * @return static A new instance with the specified user information.
      */
     public function withUserInfo($user, $password = null)
@@ -497,8 +433,8 @@ class StringUri implements UriInterface, PortMappingInterface
      * delimiter between path segments, that value MUST be passed in encoded
      * form (e.g., "%2F") to the instance.
      *
-     * @see https://tools.ietf.org/html/rfc3986#section-2
-     * @see https://tools.ietf.org/html/rfc3986#section-3.3
+     * @see    https://tools.ietf.org/html/rfc3986#section-2
+     * @see    https://tools.ietf.org/html/rfc3986#section-3.3
      * @return string The URI path.
      */
     public function getPath()
@@ -518,8 +454,8 @@ class StringUri implements UriInterface, PortMappingInterface
      * any characters. To determine what characters to encode, please refer to
      * RFC 3986, Sections 2 and 3.5.
      *
-     * @see https://tools.ietf.org/html/rfc3986#section-2
-     * @see https://tools.ietf.org/html/rfc3986#section-3.5
+     * @see    https://tools.ietf.org/html/rfc3986#section-2
+     * @see    https://tools.ietf.org/html/rfc3986#section-3.5
      * @return string The URI fragment.
      */
     public function getFragment()
@@ -560,7 +496,7 @@ class StringUri implements UriInterface, PortMappingInterface
      * The value returned MUST be normalized to lowercase, per RFC 3986
      * Section 3.2.2.
      *
-     * @see http://tools.ietf.org/html/rfc3986#section-3.2.2
+     * @see    http://tools.ietf.org/html/rfc3986#section-3.2.2
      * @return string The URI host.
      */
     public function getHost()
@@ -584,8 +520,8 @@ class StringUri implements UriInterface, PortMappingInterface
      * include an ampersand ("&") not intended as a delimiter between values,
      * that value MUST be passed in encoded form (e.g., "%26") to the instance.
      *
-     * @see https://tools.ietf.org/html/rfc3986#section-2
-     * @see https://tools.ietf.org/html/rfc3986#section-3.4
+     * @see    https://tools.ietf.org/html/rfc3986#section-2
+     * @see    https://tools.ietf.org/html/rfc3986#section-3.4
      * @return string The URI query string.
      */
     public function getQuery()
@@ -627,5 +563,40 @@ class StringUri implements UriInterface, PortMappingInterface
         $instance->{$property} = $value;
         return $instance;
     }
-}
 
+    /**
+     * Get authority part
+     *
+     * This method return the authority part of the url.
+     *
+     * @return string|NULL|number
+     */
+    private function getAuthorityPart()
+    {
+        $hostPart = '';
+        if (!empty($this->scheme)) {
+            $hostPart .= '//';
+        }
+
+        $hostPart .= $this->getAuthority();
+
+        return $hostPart;
+    }
+
+    /**
+     * Get scheme element
+     *
+     * This method return the scheme element of the url
+     *
+     * @return string
+     */
+    private function getSchemeElement() : string
+    {
+        $scheme = $this->scheme;
+        if (!empty($scheme)) {
+            $scheme .= ':';
+        }
+
+        return $scheme;
+    }
+}
