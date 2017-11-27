@@ -63,7 +63,7 @@ class StringUri implements UriInterface, PortMappingInterface
      */
     public function withScheme($scheme)
     {
-        return $this->duplicateWith('scheme', $scheme);
+        return $this->duplicateWith('scheme', strtolower($scheme));
     }
 
     public function withPath($path)
