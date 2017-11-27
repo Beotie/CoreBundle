@@ -197,15 +197,38 @@ class StringUri implements UriInterface, PortMappingInterface
         $result .= $this->getHost();
 
         $port = $this->getPort();
-        if ($port !== null) {
+        if ($port !== $this->getStandardSchemePort($this->scheme)) {
             $result .= sprintf(':%d', $port);
         }
 
         return $result;
     }
 
+    /**
+     * Return an instance with the specified port.
+     *
+     * This method MUST retain the state of the current instance, and return
+     * an instance that contains the specified port.
+     *
+     * Implementations MUST raise an exception for ports outside the
+     * established TCP and UDP port ranges.
+     *
+     * A null value provided for the port is equivalent to removing the port
+     * information.
+     *
+     * @param null|int $port The port to use with the new instance; a null value
+     *     removes the port information.
+     * @return static A new instance with the specified port.
+     * @throws \InvalidArgumentException for invalid ports.
+     */
     public function withPort($port)
-    {}
+    {
+        if ($port > 65535 || $port < 0) {
+            throw new \RuntimeException('Out of TCP/UDP allowed range');
+        }
+
+        return $this->duplicateWith('port', $port);
+    }
 
     public function __toString()
     {}
@@ -230,6 +253,15 @@ class StringUri implements UriInterface, PortMappingInterface
 
     public function getQuery()
     {}
+
+    private function getStandardSchemePort($scheme)
+    {
+        if (!empty($scheme) && isset(self::MAPPING[$scheme])) {
+            return self::MAPPING[$scheme];
+        }
+
+        return null;
+    }
 
     private function duplicateWith(string $property, $value) : StringUri
     {
