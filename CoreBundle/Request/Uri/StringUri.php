@@ -101,7 +101,7 @@ class StringUri implements UriInterface, PortMappingInterface
      *
      * @var string
      */
-    protected $password = '';
+    protected $pass= '';
 
     /**
      * Construct
