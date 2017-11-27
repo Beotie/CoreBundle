@@ -1,17 +1,106 @@
 <?php
+declare(strict_types=1);
+/**
+ * This file is part of beotie/core_bundle
+ *
+ * As each files provides by the CSCFA, this file is licensed
+ * under the MIT license.
+ *
+ * PHP version 7.1
+ *
+ * @category Request
+ * @package  Beotie_Core_Bundle
+ * @author   matthieu vallance <matthieu.vallance@cscfa.fr>
+ * @license  MIT <https://opensource.org/licenses/MIT>
+ * @link     http://cscfa.fr
+ */
 namespace Beotie\CoreBundle\Request\Uri;
 
 use Psr\Http\Message\UriInterface;
 
+/**
+ * String uri
+ *
+ * This class is used as UriInterface implemantation, based on a string url.
+ *
+ * @category Request
+ * @package  Beotie_Core_Bundle
+ * @author   matthieu vallance <matthieu.vallance@cscfa.fr>
+ * @license  MIT <https://opensource.org/licenses/MIT>
+ * @link     http://cscfa.fr
+ */
 class StringUri implements UriInterface, PortMappingInterface
 {
+    /**
+     * Scheme
+     *
+     * This property store the scheme part of the url
+     *
+     * @var string
+     */
     protected $scheme = '';
+
+    /**
+     * Path
+     *
+     * This property store the path part of the url
+     *
+     * @var string
+     */
     protected $path = '';
+
+    /**
+     * Query
+     *
+     * This property store the query part of the url
+     *
+     * @var string
+     */
     protected $query = '';
+
+    /**
+     * Fragment
+     *
+     * This property store the fragment part of the url
+     *
+     * @var string
+     */
     protected $fragment = '';
+
+    /**
+     * Host
+     *
+     * This property store the host part of the url
+     *
+     * @var string
+     */
     protected $host = '';
+
+    /**
+     * Port
+     *
+     * This property store the port part of the url
+     *
+     * @var integer|null
+     */
     protected $port = null;
+
+    /**
+     * User
+     *
+     * This property store the user part of the url
+     *
+     * @var string
+     */
     protected $user = '';
+
+    /**
+     * Password
+     *
+     * This property store the password part of the url
+     *
+     * @var string
+     */
     protected $password = '';
 
     /**
@@ -230,8 +319,110 @@ class StringUri implements UriInterface, PortMappingInterface
         return $this->duplicateWith('port', $port);
     }
 
+    /**
+     * Return the string representation as a URI reference.
+     *
+     * Depending on which components of the URI are present, the resulting
+     * string is either a full URI or relative reference according to RFC 3986,
+     * Section 4.1. The method concatenates the various components of the URI,
+     * using the appropriate delimiters:
+     *
+     * - If a scheme is present, it MUST be suffixed by ":".
+     * - If an authority is present, it MUST be prefixed by "//".
+     * - The path can be concatenated without delimiters. But there are two
+     *   cases where the path has to be adjusted to make the URI reference
+     *   valid as PHP does not allow to throw an exception in __toString():
+     *     - If the path is rootless and an authority is present, the path MUST
+     *       be prefixed by "/".
+     *     - If the path is starting with more than one "/" and no authority is
+     *       present, the starting slashes MUST be reduced to one.
+     * - If a query is present, it MUST be prefixed by "?".
+     * - If a fragment is present, it MUST be prefixed by "#".
+     *
+     * @see http://tools.ietf.org/html/rfc3986#section-4.1
+     * @return string
+     */
     public function __toString()
-    {}
+    {
+        return sprintf(
+            '%s%s%s%s%s',
+            $this->getSchemeElement(),
+            $this->getAuthorityPart(),
+            $this->getPath(),
+            $this->getQuery(),
+            $this->getFragment()
+        );
+    }
+
+    /**
+     * Get authority part
+     *
+     * This method return the authority part of the url.
+     *
+     * @return string|NULL|number
+     */
+    private function getAuthorityPart()
+    {
+        $hostPart = '';
+        if (!empty($this->scheme)) {
+            $hostPart .= '//';
+        }
+
+        $hostPart .= $this->getAuthority();
+
+        return $hostPart;
+    }
+
+    /**
+     * Get port element
+     *
+     * This method return the port element of the url
+     *
+     * @return string|NULL|number
+     */
+    private function getPortElement()
+    {
+        $port = $this->getPort();
+        if (!empty($userInfo)) {
+            $port = sprintf(':%d', $port);
+        }
+
+        return $port;
+    }
+
+    /**
+     * Get user info element
+     *
+     * This method return the user info element of the url
+     *
+     * @return string
+     */
+    private function getUserInfoElement() : string
+    {
+        $userInfo = $this->getUserInfo();
+        if (!empty($userInfo)) {
+            $userInfo .= '@';
+        }
+
+        return $userInfo;
+    }
+
+    /**
+     * Get scheme element
+     *
+     * This method return the scheme element of the url
+     *
+     * @return string
+     */
+    private function getSchemeElement() : string
+    {
+        $scheme = $this->scheme;
+        if (!empty($scheme)) {
+            $scheme .= ':';
+        }
+
+        return $scheme;
+    }
 
     /**
      * Retrieve the port component of the URI.
@@ -402,7 +593,16 @@ class StringUri implements UriInterface, PortMappingInterface
         return $this->query;
     }
 
-    private function getStandardSchemePort($scheme)
+    /**
+     * Get standard scheme port
+     *
+     * This method return the standard scheme port for a given scheme
+     *
+     * @param mixed $scheme The scheme to retreive
+     *
+     * @return string|NULL
+     */
+    private function getStandardSchemePort($scheme) : ?string
     {
         if (!empty($scheme) && isset(self::MAPPING[$scheme])) {
             return self::MAPPING[$scheme];
@@ -411,6 +611,16 @@ class StringUri implements UriInterface, PortMappingInterface
         return null;
     }
 
+    /**
+     * Duplicate with
+     *
+     * This method duplicate the current object and update a property with a given value before returning it
+     *
+     * @param string $property The property name to update
+     * @param mixed  $value    The new property value
+     *
+     * @return StringUri
+     */
     private function duplicateWith(string $property, $value) : StringUri
     {
         $instance = clone $this;

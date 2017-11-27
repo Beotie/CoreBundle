@@ -8,7 +8,7 @@ declare(strict_types=1);
  *
  * PHP version 7.1
  *
- * @category Stream
+ * @category Request
  * @package  Beotie_Core_Bundle
  * @author   matthieu vallance <matthieu.vallance@cscfa.fr>
  * @license  MIT <https://opensource.org/licenses/MIT>
