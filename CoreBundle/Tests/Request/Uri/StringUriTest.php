@@ -20,6 +20,7 @@ use PHPUnit\Framework\TestCase;
 use Beotie\CoreBundle\Request\Uri\StringUri;
 use function False\true;
 use Beotie\CoreBundle\Tests\Request\Uri\StringUri\StringUriSchemePart;
+use Beotie\CoreBundle\Tests\Request\Uri\StringUri\StringUriPathPart;
 
 /**
  * String uri test
@@ -34,7 +35,8 @@ use Beotie\CoreBundle\Tests\Request\Uri\StringUri\StringUriSchemePart;
  */
 class StringUriTest extends TestCase
 {
-    use StringUriSchemePart;
+    use StringUriSchemePart,
+        StringUriPathPart;
 
     /**
      * Uri provider

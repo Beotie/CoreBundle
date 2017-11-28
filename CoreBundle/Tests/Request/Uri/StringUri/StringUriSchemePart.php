@@ -57,6 +57,7 @@ trait StringUriSchemePart
      * @dataProvider schemeProvider
      * @return       void
      * @covers       Beotie\CoreBundle\Request\Uri\StringUri::withScheme
+     * @covers       Beotie\CoreBundle\Request\Uri\StringUri::duplicateWith
      */
     public function testWithScheme(string $scheme) : void
     {
