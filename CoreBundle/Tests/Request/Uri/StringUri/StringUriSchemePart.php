@@ -135,6 +135,30 @@ trait StringUriSchemePart
     }
 
     /**
+     * Test getStandardSchemePort
+     *
+     * This method validate the StringUri::getStandardSchemePort method
+     *
+     * @param string $scheme The scheme to use as scheme
+     *
+     * @dataProvider schemeProvider
+     * @return       void
+     * @covers       Beotie\CoreBundle\Request\Uri\StringUri::getStandardSchemePort
+     */
+    public function testGetStandardSchemePort(string $scheme) : void
+    {
+        $expectedPort = PortMappingInterface::MAPPING[$scheme];
+
+        $reflex = new \ReflectionClass(StringUri::class);
+        $instance = $reflex->newInstanceWithoutConstructor();
+
+        $reflexMethod = $reflex->getMethod('getStandardSchemePort');
+        $reflexMethod->setAccessible(true);
+
+        $this->getTestCase()->assertEquals($expectedPort, $reflexMethod->invoke($instance, $scheme));
+    }
+
+    /**
      * To array
      *
      * This method insert a value into an empty array

@@ -22,6 +22,8 @@ use function False\true;
 use Beotie\CoreBundle\Tests\Request\Uri\StringUri\StringUriSchemePart;
 use Beotie\CoreBundle\Tests\Request\Uri\StringUri\StringUriPathPart;
 use Beotie\CoreBundle\Tests\Request\Uri\StringUri\StringUriQueryPart;
+use Beotie\CoreBundle\Tests\Request\Uri\StringUri\StringUriFragmentPart;
+use Beotie\CoreBundle\Tests\Request\Uri\StringUri\StringUriHostPart;
 
 /**
  * String uri test
@@ -38,7 +40,9 @@ class StringUriTest extends TestCase
 {
     use StringUriSchemePart,
         StringUriPathPart,
-        StringUriQueryPart;
+        StringUriQueryPart,
+        StringUriFragmentPart,
+        StringUriHostPart;
 
     /**
      * Uri provider

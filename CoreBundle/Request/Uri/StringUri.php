@@ -538,7 +538,7 @@ class StringUri implements UriInterface, PortMappingInterface
      *
      * @return string|NULL
      */
-    private function getStandardSchemePort($scheme) : ?string
+    private function getStandardSchemePort($scheme) : ?int
     {
         if (!empty($scheme) && isset(self::MAPPING[$scheme])) {
             return self::MAPPING[$scheme];
