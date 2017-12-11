@@ -64,14 +64,9 @@ trait MetadataComponent
 
         if (count($methods) !== 1) {
             $availables = array_filter(array_map([$this, 'getMetadataApplyable'], get_class_methods($this->fileInfo)));
+            $message = 'Undefined getter for "%s" metadata. Availables are : [%s]';
 
-            throw new \RuntimeException(
-                sprintf(
-                    'Undefined getter for "%s" metadata. Availables are : [%s]',
-                    $key,
-                    implode(', ', $availables)
-                )
-            );
+            throw new \RuntimeException(sprintf($message, $key, implode(', ', $availables)));
         }
 
         return $this->fileInfo->{$methods[array_keys($methods)[0]]}();

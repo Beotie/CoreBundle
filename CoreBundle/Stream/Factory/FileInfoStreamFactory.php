@@ -130,15 +130,10 @@ class FileInfoStreamFactory extends AbstractEmbeddedStreamFactory
     protected function contentIsFileInfo($file, string $method = 'getStream') : bool
     {
         if (! $file instanceof \SplFileInfo) {
-            throw new \RuntimeException(
-                sprintf(
-                    'The "%s::%s" expect the file array key to be an instance of "%s". "%s" given',
-                    static::class,
-                    $method,
-                    \SplFileInfo::class,
-                    (is_object($file) ? get_class($file) : gettype($file))
-                )
-            );
+            $message = 'The "%s::%s" expect the file array key to be an instance of "%s". "%s" given';
+            $givenType = (is_object($file) ? get_class($file) : gettype($file));
+
+            throw new \RuntimeException(sprintf($message, static::class, $method, \SplFileInfo::class, $givenType));
         }
 
         return true;
