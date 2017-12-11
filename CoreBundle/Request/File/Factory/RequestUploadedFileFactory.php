@@ -137,15 +137,10 @@ class RequestUploadedFileFactory implements EmbeddedFileFactoryInterface
     protected function contentIsUploadedFile($file, string $method = 'getUploadFile') : bool
     {
         if (! $file instanceof UploadedFile) {
-            throw new \RuntimeException(
-                sprintf(
-                    'The "%s::%s" expect the file array key to be an instance of "%s". "%s" given',
-                    static::class,
-                    $method,
-                    UploadedFile::class,
-                    (is_object($file) ? get_class($file) : gettype($file))
-                )
-            );
+            $message = 'The "%s::%s" expect the file array key to be an instance of "%s". "%s" given';
+            $givenType = (is_object($file) ? get_class($file) : gettype($file));
+
+            throw new \RuntimeException(sprintf($message, static::class, $method, UploadedFile::class, $givenType));
         }
 
         return true;
