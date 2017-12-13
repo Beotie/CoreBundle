@@ -80,7 +80,7 @@ echo "$TEST_RES" > doc/phpmd.txt
 test "$PHP_PATH vendor/bin/phpcpd CoreBundle/" PHPCPD 1
 echo "$TEST_RES" > doc/phpcpd.txt
 
-test "$PHP_PATH vendor/bin/phpmetrics --report-html=doc/metrics CoreBundle/" PHPMETRICS 1
+test "$PHP_PATH vendor/bin/phpmetrics --report-html=doc/metrics ." PHPMETRICS 1
 echo "$TEST_RES" > doc/phpmetrics.txt
 
 if [ "$STATUS" -eq 0 ]
