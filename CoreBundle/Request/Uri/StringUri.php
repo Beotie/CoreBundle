@@ -101,7 +101,7 @@ class StringUri implements UriInterface, PortMappingInterface
      *
      * @var string
      */
-    protected $pass= '';
+    protected $pass = '';
 
     /**
      * Construct
@@ -317,7 +317,7 @@ class StringUri implements UriInterface, PortMappingInterface
      */
     public function withPort($port)
     {
-        if ($port > 65535 || $port < 0) {
+        if ($port > 65535 || $port < 0 || !is_int($port)) {
             throw new \RuntimeException('Out of TCP/UDP allowed range');
         }
 
@@ -402,11 +402,11 @@ class StringUri implements UriInterface, PortMappingInterface
     {
         $instance = $this->duplicateWith('user', $user);
         if (empty($user)) {
-            $instance->password = null;
+            $instance->pass = null;
         }
 
         if (!empty($password) && !empty($user)) {
-            $instance->password = $password;
+            $instance->pass = $password;
         }
 
         return $instance;
@@ -481,8 +481,8 @@ class StringUri implements UriInterface, PortMappingInterface
     public function getUserInfo()
     {
         $result = $this->user;
-        if (!empty($this->password)) {
-            $result .= sprintf(':%s', $this->password);
+        if (!empty($this->pass)) {
+            $result .= sprintf(':%s', $this->pass);
         }
 
         return $result;
@@ -538,10 +538,10 @@ class StringUri implements UriInterface, PortMappingInterface
      *
      * @return string|NULL
      */
-    private function getStandardSchemePort($scheme) : ?int
+    private function getStandardSchemePort(?string $scheme) : ?int
     {
-        if (!empty($scheme) && isset(self::MAPPING[$scheme])) {
-            return self::MAPPING[$scheme];
+        if (!empty($scheme) && isset(self::MAPPING[strtolower($scheme)])) {
+            return self::MAPPING[strtolower($scheme)];
         }
 
         return null;
