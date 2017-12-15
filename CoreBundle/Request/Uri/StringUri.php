@@ -402,7 +402,7 @@ class StringUri implements UriInterface, PortMappingInterface
     {
         $instance = $this->duplicateWith('user', $user);
         if (empty($user)) {
-            $instance->pass = null;
+            $instance->pass = '';
         }
 
         if (!empty($password) && !empty($user)) {

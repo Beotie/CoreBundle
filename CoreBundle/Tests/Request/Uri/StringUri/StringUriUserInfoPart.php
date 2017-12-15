@@ -44,9 +44,58 @@ trait StringUriUserInfoPart
         return  [
             ['user', 'password', 'user:password'],
             ['user', null, 'user'],
-            [null, 'password', ':password'],
-            [null, null, '']
+            ['', null, ''],
+            ['', 'password', ':password']
         ];
+    }
+
+    /**
+     * Test withUserInfo
+     *
+     * This method validate the StringUri::withUserInfo method
+     *
+     * @param string $user The user to use as user name
+     * @param string $pass The pass to use as user password
+     *
+     * @dataProvider userInfoProvider
+     * @return       void
+     * @covers       Beotie\CoreBundle\Request\Uri\StringUri::withUserInfo
+     * @covers       Beotie\CoreBundle\Request\Uri\StringUri::duplicateWith
+     */
+    public function testWithUserInfo(string $user, ?string $pass) : void
+    {
+        $baseUser = 'test_user';
+        $basePass = 'test_pass';
+
+        $reflex = new \ReflectionClass(StringUri::class);
+        $instance = $reflex->newInstanceWithoutConstructor();
+
+        $userProperty = $reflex->getProperty('user');
+        $userProperty->setAccessible(true);
+        $userProperty->setValue($instance, $baseUser);
+
+        $passProperty = $reflex->getProperty('pass');
+        $passProperty->setAccessible(true);
+        $passProperty->setValue($instance, $basePass);
+
+        $newInstance = $instance->withUserInfo($user, $pass);
+
+        $this->getTestCase()->assertEquals($baseUser, $userProperty->getValue($instance));
+        $this->getTestCase()->assertEquals($basePass, $passProperty->getValue($instance));
+
+        $this->getTestCase()->assertEquals($user, $userProperty->getValue($newInstance));
+        if (empty($user)) {
+            $pass = '';
+        }
+        if (!empty($user) && $pass === null) {
+            $pass = $basePass;
+        }
+        $this->getTestCase()->assertEquals(
+            $this->resolvePassword($user, $pass, $basePass),
+            $passProperty->getValue($newInstance)
+        );
+
+        return;
     }
 
     /**
@@ -54,15 +103,15 @@ trait StringUriUserInfoPart
      *
      * This method validate the StringUri::getUserInfo method
      *
-     * @param string|null $user     The user to use as user name
-     * @param string|null $pass     The pass to use as user password
-     * @param string      $expected The expectation of the getUserInfo method result
+     * @param string $user     The user to use as user name
+     * @param string $pass     The pass to use as user password
+     * @param string $expected The expectation of the getUserInfo method result
      *
      * @dataProvider userInfoProvider
      * @return       void
      * @covers       Beotie\CoreBundle\Request\Uri\StringUri::getUserInfo
      */
-    public function testGetUserInfo(?string $user, ?string $pass, string $expected) : void
+    public function testGetUserInfo(string $user, ?string $pass, string $expected) : void
     {
         $reflex = new \ReflectionClass(StringUri::class);
         $instance = $reflex->newInstanceWithoutConstructor();
@@ -80,6 +129,8 @@ trait StringUriUserInfoPart
         }
 
         $this->getTestCase()->assertEquals($expected, $instance->getUserInfo());
+
+        return;
     }
 
     /**
@@ -90,4 +141,28 @@ trait StringUriUserInfoPart
      * @return TestCase
      */
     protected abstract function getTestCase() : TestCase;
+
+    /**
+     * Resolve password
+     *
+     * This method resolve the expected password, according with user status to validate the StringUri::withUserInfo
+     * method
+     *
+     * @param string      $user     The new username
+     * @param string|null $password The new user password
+     * @param string      $basePass The base password used in main instance
+     *
+     * @return string
+     */
+    private function resolvePassword(string $user, ?string $password, string $basePass) : string
+    {
+        if (empty($user)) {
+            return '';
+        }
+        if ($password === null) {
+            return $basePass;
+        }
+
+        return $password;
+    }
 }
