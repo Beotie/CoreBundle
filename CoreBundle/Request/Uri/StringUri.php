@@ -22,6 +22,7 @@ use Beotie\CoreBundle\Request\Uri\StringUriElement\SchemeElementTrait;
 use Beotie\CoreBundle\Request\Uri\StringUriElement\PathElementTrait;
 use Beotie\CoreBundle\Request\Uri\StringUriElement\QueryElementTrait;
 use Beotie\CoreBundle\Request\Uri\StringUriElement\FragmentElementTrait;
+use Beotie\CoreBundle\Request\Uri\StringUriElement\HostElementTrait;
 
 /**
  * String uri
@@ -40,16 +41,8 @@ class StringUri implements UriInterface, PortMappingInterface
         SchemeElementTrait,
         PathElementTrait,
         QueryElementTrait,
-        FragmentElementTrait;
-
-    /**
-     * Host
-     *
-     * This property store the host part of the url
-     *
-     * @var string
-     */
-    protected $host = '';
+        FragmentElementTrait,
+        HostElementTrait;
 
     /**
      * Port
@@ -107,24 +100,6 @@ class StringUri implements UriInterface, PortMappingInterface
                 $this->{$component} = $components[$component];
             }
         }
-    }
-
-    /**
-     * Return an instance with the specified host.
-     *
-     * This method MUST retain the state of the current instance, and return
-     * an instance that contains the specified host.
-     *
-     * An empty host value is equivalent to removing the host.
-     *
-     * @param string $host The hostname to use with the new instance.
-     *
-     * @return static A new instance with the specified host.
-     * @throws \InvalidArgumentException for invalid hostnames.
-     */
-    public function withHost($host)
-    {
-        return $this->duplicateWith('host', $host);
     }
 
     /**
@@ -271,22 +246,6 @@ class StringUri implements UriInterface, PortMappingInterface
         }
 
         return $result;
-    }
-
-    /**
-     * Retrieve the host component of the URI.
-     *
-     * If no host is present, this method MUST return an empty string.
-     *
-     * The value returned MUST be normalized to lowercase, per RFC 3986
-     * Section 3.2.2.
-     *
-     * @see    http://tools.ietf.org/html/rfc3986#section-3.2.2
-     * @return string The URI host.
-     */
-    public function getHost()
-    {
-        return $this->host;
     }
 
     /**
