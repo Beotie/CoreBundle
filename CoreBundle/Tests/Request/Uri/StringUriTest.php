@@ -27,6 +27,7 @@ use Beotie\CoreBundle\Tests\Request\Uri\StringUri\StringUriHostPart;
 use Beotie\CoreBundle\Tests\Request\Uri\StringUri\StringUriAuthorityPart;
 use Beotie\CoreBundle\Tests\Request\Uri\StringUri\StringUriPortPart;
 use Beotie\CoreBundle\Tests\Request\Uri\StringUri\StringUriUserInfoPart;
+use Beotie\CoreBundle\Tests\Request\Uri\StringUri\StringUriToString;
 
 /**
  * String uri test
@@ -48,7 +49,8 @@ class StringUriTest extends TestCase
         StringUriHostPart,
         StringUriAuthorityPart,
         StringUriPortPart,
-        StringUriUserInfoPart;
+        StringUriUserInfoPart,
+        StringUriToString;
 
     /**
      * Uri provider

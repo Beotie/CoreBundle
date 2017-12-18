@@ -349,14 +349,20 @@ class StringUri implements UriInterface, PortMappingInterface
      */
     public function __toString()
     {
-        return sprintf(
-            '%s%s%s%s%s',
-            $this->getSchemeElement(),
-            $this->getAuthorityPart(),
-            $this->getPath(),
-            $this->getQuery(),
-            $this->getFragment()
-        );
+        $query = $this->getQuery();
+        if ($query) {
+            $query = sprintf('?%s', $query);
+        }
+
+        $fragment = $this->getFragment();
+        if ($fragment) {
+            $fragment = sprintf('#%s', $fragment);
+        }
+
+        $base = sprintf('%s%s%s', $this->getSchemeElement(), $this->getAuthorityPart(), $this->getPath());
+        $complement = sprintf('%s%s', $query, $fragment);
+
+        return sprintf('%s%s', $base, $complement);
     }
 
     /**
