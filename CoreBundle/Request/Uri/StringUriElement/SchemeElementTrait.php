@@ -19,7 +19,7 @@ namespace Beotie\CoreBundle\Request\Uri\StringUriElement;
 use Beotie\CoreBundle\Request\Uri\StringUri;
 
 /**
- * Authority element trait
+ * Scheme element trait
  *
  * This trait is use for decoupling the scheme part of the StringUri from the main class
  *
