@@ -17,6 +17,7 @@ declare(strict_types=1);
 namespace Beotie\CoreBundle\Request\Uri;
 
 use Psr\Http\Message\UriInterface;
+use Beotie\CoreBundle\Request\Uri\StringUriElement\AuthorityElementTrait;
 
 /**
  * String uri
@@ -31,6 +32,8 @@ use Psr\Http\Message\UriInterface;
  */
 class StringUri implements UriInterface, PortMappingInterface
 {
+    use AuthorityElementTrait;
+
     /**
      * Scheme
      *
@@ -259,42 +262,6 @@ class StringUri implements UriInterface, PortMappingInterface
     public function withHost($host)
     {
         return $this->duplicateWith('host', $host);
-    }
-
-    /**
-     * Retrieve the authority component of the URI.
-     *
-     * If no authority information is present, this method MUST return an empty
-     * string.
-     *
-     * The authority syntax of the URI is:
-     *
-     * <pre>
-     * [user-info@]host[:port]
-     * </pre>
-     *
-     * If the port component is not set or is the standard port for the current
-     * scheme, it SHOULD NOT be included.
-     *
-     * @see    https://tools.ietf.org/html/rfc3986#section-3.2
-     * @return string The URI authority, in "[user-info@]host[:port]" format.
-     */
-    public function getAuthority()
-    {
-        $result = '';
-        $userInfo = $this->getUserInfo();
-        if (!empty($userInfo)) {
-            $result .= sprintf('%s@', $userInfo);
-        }
-
-        $result .= $this->getHost();
-
-        $port = $this->getPort();
-        if (!empty($port)) {
-            $result .= sprintf(':%d', $port);
-        }
-
-        return $result;
     }
 
     /**
@@ -568,25 +535,6 @@ class StringUri implements UriInterface, PortMappingInterface
         $instance = clone $this;
         $instance->{$property} = $value;
         return $instance;
-    }
-
-    /**
-     * Get authority part
-     *
-     * This method return the authority part of the url.
-     *
-     * @return string|NULL|number
-     */
-    private function getAuthorityPart()
-    {
-        $hostPart = '';
-        if (!empty($this->scheme)) {
-            $hostPart .= '//';
-        }
-
-        $hostPart .= $this->getAuthority();
-
-        return $hostPart;
     }
 
     /**
