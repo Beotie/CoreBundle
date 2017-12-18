@@ -18,6 +18,7 @@ namespace Beotie\CoreBundle\Request\Uri;
 
 use Psr\Http\Message\UriInterface;
 use Beotie\CoreBundle\Request\Uri\StringUriElement\AuthorityElementTrait;
+use Beotie\CoreBundle\Request\Uri\StringUriElement\SchemeElementTrait;
 
 /**
  * String uri
@@ -32,16 +33,8 @@ use Beotie\CoreBundle\Request\Uri\StringUriElement\AuthorityElementTrait;
  */
 class StringUri implements UriInterface, PortMappingInterface
 {
-    use AuthorityElementTrait;
-
-    /**
-     * Scheme
-     *
-     * This property store the scheme part of the url
-     *
-     * @var string
-     */
-    protected $scheme = '';
+    use AuthorityElementTrait,
+        SchemeElementTrait;
 
     /**
      * Path
@@ -138,27 +131,6 @@ class StringUri implements UriInterface, PortMappingInterface
     }
 
     /**
-     * Return an instance with the specified scheme.
-     *
-     * This method MUST retain the state of the current instance, and return
-     * an instance that contains the specified scheme.
-     *
-     * Implementations MUST support the schemes "http" and "https" case
-     * insensitively, and MAY accommodate other schemes if required.
-     *
-     * An empty scheme is equivalent to removing the scheme.
-     *
-     * @param string $scheme The scheme to use with the new instance.
-     *
-     * @return static A new instance with the specified scheme.
-     * @throws \InvalidArgumentException for invalid or unsupported schemes.
-     */
-    public function withScheme($scheme)
-    {
-        return $this->duplicateWith('scheme', strtolower($scheme));
-    }
-
-    /**
      * Return an instance with the specified path.
      *
      * This method MUST retain the state of the current instance, and return
@@ -205,25 +177,6 @@ class StringUri implements UriInterface, PortMappingInterface
     public function withQuery($query)
     {
         return $this->duplicateWith('query', $query);
-    }
-
-    /**
-     * Retrieve the scheme component of the URI.
-     *
-     * If no scheme is present, this method MUST return an empty string.
-     *
-     * The value returned MUST be normalized to lowercase, per RFC 3986
-     * Section 3.1.
-     *
-     * The trailing ":" character is not part of the scheme and MUST NOT be
-     * added.
-     *
-     * @see    https://tools.ietf.org/html/rfc3986#section-3.1
-     * @return string The URI scheme.
-     */
-    public function getScheme()
-    {
-        return strtolower($this->scheme);
     }
 
     /**
@@ -503,6 +456,23 @@ class StringUri implements UriInterface, PortMappingInterface
     }
 
     /**
+     * Duplicate with
+     *
+     * This method duplicate the current object and update a property with a given value before returning it
+     *
+     * @param string $property The property name to update
+     * @param mixed  $value    The new property value
+     *
+     * @return StringUri
+     */
+    protected function duplicateWith(string $property, $value) : StringUri
+    {
+        $instance = clone $this;
+        $instance->{$property} = $value;
+        return $instance;
+    }
+
+    /**
      * Get standard scheme port
      *
      * This method return the standard scheme port for a given scheme
@@ -518,23 +488,6 @@ class StringUri implements UriInterface, PortMappingInterface
         }
 
         return null;
-    }
-
-    /**
-     * Duplicate with
-     *
-     * This method duplicate the current object and update a property with a given value before returning it
-     *
-     * @param string $property The property name to update
-     * @param mixed  $value    The new property value
-     *
-     * @return StringUri
-     */
-    private function duplicateWith(string $property, $value) : StringUri
-    {
-        $instance = clone $this;
-        $instance->{$property} = $value;
-        return $instance;
     }
 
     /**
