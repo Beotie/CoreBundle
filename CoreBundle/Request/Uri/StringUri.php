@@ -21,6 +21,7 @@ use Beotie\CoreBundle\Request\Uri\StringUriElement\AuthorityElementTrait;
 use Beotie\CoreBundle\Request\Uri\StringUriElement\SchemeElementTrait;
 use Beotie\CoreBundle\Request\Uri\StringUriElement\PathElementTrait;
 use Beotie\CoreBundle\Request\Uri\StringUriElement\QueryElementTrait;
+use Beotie\CoreBundle\Request\Uri\StringUriElement\FragmentElementTrait;
 
 /**
  * String uri
@@ -38,16 +39,8 @@ class StringUri implements UriInterface, PortMappingInterface
     use AuthorityElementTrait,
         SchemeElementTrait,
         PathElementTrait,
-        QueryElementTrait;
-
-    /**
-     * Fragment
-     *
-     * This property store the fragment part of the url
-     *
-     * @var string
-     */
-    protected $fragment = '';
+        QueryElementTrait,
+        FragmentElementTrait;
 
     /**
      * Host
@@ -114,26 +107,6 @@ class StringUri implements UriInterface, PortMappingInterface
                 $this->{$component} = $components[$component];
             }
         }
-    }
-
-    /**
-     * Return an instance with the specified URI fragment.
-     *
-     * This method MUST retain the state of the current instance, and return
-     * an instance that contains the specified URI fragment.
-     *
-     * Users can provide both encoded and decoded fragment characters.
-     * Implementations ensure the correct encoding as outlined in getFragment().
-     *
-     * An empty fragment value is equivalent to removing the fragment.
-     *
-     * @param string $fragment The fragment to use with the new instance.
-     *
-     * @return static A new instance with the specified fragment.
-     */
-    public function withFragment($fragment)
-    {
-        return $this->duplicateWith('fragment', $fragment);
     }
 
     /**
@@ -273,27 +246,6 @@ class StringUri implements UriInterface, PortMappingInterface
         }
 
         return $instance;
-    }
-
-    /**
-     * Retrieve the fragment component of the URI.
-     *
-     * If no fragment is present, this method MUST return an empty string.
-     *
-     * The leading "#" character is not part of the fragment and MUST NOT be
-     * added.
-     *
-     * The value returned MUST be percent-encoded, but MUST NOT double-encode
-     * any characters. To determine what characters to encode, please refer to
-     * RFC 3986, Sections 2 and 3.5.
-     *
-     * @see    https://tools.ietf.org/html/rfc3986#section-2
-     * @see    https://tools.ietf.org/html/rfc3986#section-3.5
-     * @return string The URI fragment.
-     */
-    public function getFragment()
-    {
-        return $this->fragment;
     }
 
     /**
