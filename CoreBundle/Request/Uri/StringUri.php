@@ -23,6 +23,7 @@ use Beotie\CoreBundle\Request\Uri\StringUriElement\PathElementTrait;
 use Beotie\CoreBundle\Request\Uri\StringUriElement\QueryElementTrait;
 use Beotie\CoreBundle\Request\Uri\StringUriElement\FragmentElementTrait;
 use Beotie\CoreBundle\Request\Uri\StringUriElement\HostElementTrait;
+use Beotie\CoreBundle\Request\Uri\StringUriElement\PortElementTrait;
 
 /**
  * String uri
@@ -42,16 +43,8 @@ class StringUri implements UriInterface, PortMappingInterface
         PathElementTrait,
         QueryElementTrait,
         FragmentElementTrait,
-        HostElementTrait;
-
-    /**
-     * Port
-     *
-     * This property store the port part of the url
-     *
-     * @var integer|null
-     */
-    protected $port = null;
+        HostElementTrait,
+        PortElementTrait;
 
     /**
      * User
@@ -103,33 +96,6 @@ class StringUri implements UriInterface, PortMappingInterface
     }
 
     /**
-     * Return an instance with the specified port.
-     *
-     * This method MUST retain the state of the current instance, and return
-     * an instance that contains the specified port.
-     *
-     * Implementations MUST raise an exception for ports outside the
-     * established TCP and UDP port ranges.
-     *
-     * A null value provided for the port is equivalent to removing the port
-     * information.
-     *
-     * @param null|int $port The port to use with the new instance; a null value
-     *                       removes the port information.
-     *
-     * @return static A new instance with the specified port.
-     * @throws \InvalidArgumentException for invalid ports.
-     */
-    public function withPort($port)
-    {
-        if ($port > 65535 || $port < 0 || !is_int($port)) {
-            throw new \RuntimeException('Out of TCP/UDP allowed range');
-        }
-
-        return $this->duplicateWith('port', $port);
-    }
-
-    /**
      * Return the string representation as a URI reference.
      *
      * Depending on which components of the URI are present, the resulting
@@ -168,30 +134,6 @@ class StringUri implements UriInterface, PortMappingInterface
         $complement = sprintf('%s%s', $query, $fragment);
 
         return sprintf('%s%s', $base, $complement);
-    }
-
-    /**
-     * Retrieve the port component of the URI.
-     *
-     * If a port is present, and it is non-standard for the current scheme,
-     * this method MUST return it as an integer. If the port is the standard port
-     * used with the current scheme, this method SHOULD return null.
-     *
-     * If no port is present, and no scheme is present, this method MUST return
-     * a null value.
-     *
-     * If no port is present, but a scheme is present, this method MAY return
-     * the standard port for that scheme, but SHOULD return null.
-     *
-     * @return null|int The URI port.
-     */
-    public function getPort()
-    {
-        if ($this->port !== $this->getStandardSchemePort($this->scheme)) {
-            return intval($this->port);
-        }
-
-        return null;
     }
 
     /**
@@ -274,7 +216,7 @@ class StringUri implements UriInterface, PortMappingInterface
      *
      * @return string|NULL
      */
-    private function getStandardSchemePort(?string $scheme) : ?int
+    protected function getStandardSchemePort(?string $scheme) : ?int
     {
         if (!empty($scheme) && isset(self::MAPPING[strtolower($scheme)])) {
             return self::MAPPING[strtolower($scheme)];
