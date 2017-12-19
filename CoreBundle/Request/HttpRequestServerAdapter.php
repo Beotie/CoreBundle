@@ -104,7 +104,7 @@ class HttpRequestServerAdapter implements ServerRequestInterface
         $httpRequest = clone $this->httpRequest;
         $parameters = array_merge($httpRequest->query->all(), $httpRequest->request->all());
         $httpRequest->create(
-            $uri,
+            (string)$uri,
             $httpRequest->getMethod(),
             $parameters,
             $httpRequest->cookies->all(),
@@ -290,16 +290,16 @@ class HttpRequestServerAdapter implements ServerRequestInterface
      * have defined a host, this method does not update the request with the uri host as long as the force
      * parameter is set to false.
      *
-     * @param Request $request The request to update
-     * @param string  $uri     The uri whence extract the host
-     * @param bool    $force   Indicate the request header MUST be override if the uri contain host
+     * @param Request      $request The request to update
+     * @param UriInterface $uri     The uri whence extract the host
+     * @param bool         $force   Indicate the request header MUST be override if the uri contain host
      *
      * @return void
      */
-    private function updateHostFromUri(Request $request, string $uri, bool $force)
+    private function updateHostFromUri(Request $request, UriInterface $uri, bool $force)
     {
-        $uriHostComponent = parse_url($uri, PHP_URL_HOST);
-        if ($uriHostComponent === false) {
+        $uriHostComponent = $uri->getHost();
+        if (empty($uriHostComponent)) {
             return;
         }
 
