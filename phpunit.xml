@@ -57,5 +57,6 @@
     
     <logging>
         <log type="coverage-html" target="doc/coverage" lowUpperBound="80" highLowerBound="95"/>
-    </logging>·
+        <log type="junit" target="doc/phpunit_logfile.xml" />
+    </logging>
 </phpunit>
