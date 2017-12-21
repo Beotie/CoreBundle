@@ -20,12 +20,12 @@ use Beotie\CoreBundle\Request\HttpRequestServerAdapter;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Beotie\CoreBundle\Request\File\Factory\EmbeddedFileFactoryInterface;
-use Psr\Http\Message\UriInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\FileBag;
 use Symfony\Component\HttpFoundation\ServerBag;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use PHPUnit\Framework\MockObject\MockObject;
+use Beotie\CoreBundle\Tests\Request\HttpRequestServerAdapter as TestTrait;
 
 /**
  * HttpRequestServerAdapter test
@@ -40,6 +40,10 @@ use PHPUnit\Framework\MockObject\MockObject;
  */
 class HttpRequestServerAdapterTest extends TestCase
 {
+    use TestTrait\UriTestTrait,
+        TestTrait\MethodTestTrait,
+        TestTrait\RequestTargetTestTrait;
+
     /**
      * Test construct
      *
@@ -70,150 +74,6 @@ class HttpRequestServerAdapterTest extends TestCase
     }
 
     /**
-     * Test with uri
-     *
-     * This method validate the HttpRequestServerAdapter::withUri method
-     *
-     * @return void
-     * @covers Beotie\CoreBundle\Request\HttpRequestServerAdapter::withUri
-     */
-    public function testWithUri()
-    {
-        $httpRequest = $this->getRequest();
-
-        $uri = $this->createMock(UriInterface::class);
-        $uri->expects($this->once())
-            ->method('__toString')
-            ->willReturn('/URI');
-
-        $fileFactory = $this->createMock(EmbeddedFileFactoryInterface::class);
-
-        $instance = new HttpRequestServerAdapter($httpRequest, $fileFactory);
-
-        $newRequest = $instance->withUri($uri);
-        $this->assertInstanceOf(HttpRequestServerAdapter::class, $newRequest);
-
-        $requestProperty = new \ReflectionProperty(HttpRequestServerAdapter::class, 'httpRequest');
-        $requestProperty->setAccessible(true);
-        $innerRequest = $requestProperty->getValue($newRequest);
-
-        $this->assertSame('/URI', $innerRequest->getPathInfo());
-        $this->assertNotSame($httpRequest, $innerRequest);
-
-        return;
-    }
-
-    /**
-     * Method provider
-     *
-     * Return an array of 2 dimensions of string value to be used by the testGetMethod as testing data fixtures.
-     *
-     * @see    HttpRequestServerAdapterTest::testGetMethod
-     * @return [[string]]
-     */
-    public function methodProvider() : array
-    {
-        return [
-            ['POST'],
-            ['GET'],
-            ['PUT'],
-            ['PATCH'],
-            ['PING'],
-            ['CONNECT']
-        ];
-    }
-
-    /**
-     * Test getMethod
-     *
-     * Validate that the HttpRequestServerAdapter::getMethod return the result of the Request's getMethod() method.
-     *
-     * @param string $method The method expected to be returned by the HttpRequestServerAdapter::getMethod and injected
-     *                       into the Request instance
-     *
-     * @return       void
-     * @dataProvider methodProvider
-     */
-    public function testGetMethod(string $method) : void
-    {
-        $request = $this->getRequest(
-            [
-                [
-                    'expects' => $this->once(),
-                    'method' => 'getMethod',
-                    'willReturn' => $method
-                ]
-            ]
-        );
-
-        $reflex = new \ReflectionClass(HttpRequestServerAdapter::class);
-        $instance = $reflex->newInstanceWithoutConstructor();
-
-        $requestProperty = $reflex->getProperty('httpRequest');
-        $requestProperty->setAccessible(true);
-
-        $requestProperty->setValue($instance, $request);
-
-        $this->assertEquals($method, $instance->getMethod());
-
-        return;
-    }
-
-    /**
-     * Request target provider
-     *
-     * Return an array of 2 dimensions of string value to be used by the testGetRequestTarget as testing data fixtures.
-     *
-     * @see    HttpRequestServerAdapterTest::testGetRequestTarget
-     * @return [[string]]
-     */
-    public function requestTargetProvider() : array
-    {
-        return [
-            ['/where?q=now'],
-            ['http://www.example.org/pub/WWW/TheProject.html'],
-            ['www.example.com:80']
-        ];
-    }
-
-    /**
-     * Test getRequestTarget
-     *
-     * Validate that the HttpRequestServerAdapter::getRequestTarget return the result of the Request's getRequestUri()
-     * method.
-     *
-     * @param string $requestTarget The request target expected to be returned by the
-     *                              HttpRequestServerAdapter::getRequestTarget and injected into the Request instance
-     *
-     * @return       void
-     * @dataProvider requestTargetProvider
-     */
-    public function testGetRequestTarget(string $requestTarget) : void
-    {
-        $request = $this->getRequest(
-            [
-                [
-                    'expects' => $this->once(),
-                    'method' => 'getRequestUri',
-                    'willReturn' => $requestTarget
-                ]
-            ]
-        );
-
-        $reflex = new \ReflectionClass(HttpRequestServerAdapter::class);
-        $instance = $reflex->newInstanceWithoutConstructor();
-
-        $requestProperty = $reflex->getProperty('httpRequest');
-        $requestProperty->setAccessible(true);
-
-        $requestProperty->setValue($instance, $request);
-
-        $this->assertEquals($requestTarget, $instance->getRequestTarget());
-
-        return;
-    }
-
-    /**
      * Get request
      *
      * Return an instance of Request mock that contain a ParameterBag mock in cookies, query and request properties
@@ -239,7 +99,7 @@ class HttpRequestServerAdapterTest extends TestCase
      *  );
      * </pre>
      */
-    private function getRequest(array $parameters = []) : MockObject
+    protected function getRequest(array $parameters = []) : MockObject
     {
         $httpRequest = $this->createMock(Request::class);
         $this->createInvocation($httpRequest, $parameters);
