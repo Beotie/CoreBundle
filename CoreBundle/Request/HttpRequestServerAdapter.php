@@ -96,26 +96,26 @@ class HttpRequestServerAdapter implements ServerRequestInterface
      * @param UriInterface $uri          New request URI to use.
      * @param bool         $preserveHost Preserve the original state of the Host header.
      *
-     * @link   http://tools.ietf.org/html/rfc3986#section-4.3
-     * @return static
+     * @link                                 http://tools.ietf.org/html/rfc3986#section-4.3
+     * @return                               static
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function withUri(UriInterface $uri, $preserveHost = false)
     {
-        $httpRequest = clone $this->httpRequest;
-        $parameters = array_merge($httpRequest->query->all(), $httpRequest->request->all());
-        $httpRequest->create(
+        $parameters = array_merge($this->httpRequest->query->all(), $this->httpRequest->request->all());
+        $httpRequest = Request::create(
             (string)$uri,
-            $httpRequest->getMethod(),
+            $this->httpRequest->getMethod(),
             $parameters,
-            $httpRequest->cookies->all(),
-            $httpRequest->files->all(),
-            $httpRequest->server->all(),
-            $httpRequest->getContent()
+            $this->httpRequest->cookies->all(),
+            $this->httpRequest->files->all(),
+            $this->httpRequest->server->all(),
+            $this->httpRequest->getContent()
         );
 
         $this->updateHostFromUri($httpRequest, $uri, !$preserveHost);
 
-        return new static($httpRequest);
+        return new static($httpRequest, $this->fileFactory);
     }
 
     /**
@@ -163,15 +163,15 @@ class HttpRequestServerAdapter implements ServerRequestInterface
      *
      * @param mixed $requestTarget the request target
      *
-     * @link   http://tools.ietf.org/html/rfc7230#section-5.3 (for the various
+     * @link                                 http://tools.ietf.org/html/rfc7230#section-5.3 (for the various
      *     request-target forms allowed in request messages)
-     * @return static
+     * @return                               static
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function withRequestTarget($requestTarget)
     {
-        $httpRequest = clone $this->httpRequest;
         $parameters = array_merge($httpRequest->query->all(), $httpRequest->request->all());
-        $httpRequest->create(
+        $httpRequest = Request::create(
             $requestTarget,
             $httpRequest->getMethod(),
             $parameters,
@@ -234,8 +234,9 @@ class HttpRequestServerAdapter implements ServerRequestInterface
      *
      * @param string $method Case-sensitive method.
      *
-     * @throws \InvalidArgumentException for invalid HTTP methods.
-     * @return static
+     * @throws                               \InvalidArgumentException for invalid HTTP methods.
+     * @return                               static
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function withMethod($method)
     {
@@ -243,8 +244,7 @@ class HttpRequestServerAdapter implements ServerRequestInterface
         $parameters = array_merge($httpRequest->query->all(), $httpRequest->request->all());
 
         return new static(
-            $httpRequest->create(
-                $this->getUri(),
+            Request::create(
                 $method,
                 $parameters,
                 $httpRequest->cookies->all(),
