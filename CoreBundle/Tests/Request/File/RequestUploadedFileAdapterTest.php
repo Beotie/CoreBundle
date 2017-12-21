@@ -29,11 +29,12 @@ use Beotie\CoreBundle\Stream\Factory\AbstractEmbeddedStreamFactory;
  *
  * This class is used to validate the RequestUploadedFileAdapter class
  *
- * @category Test
- * @package  Beotie_Core_Bundle
- * @author   matthieu vallance <matthieu.vallance@cscfa.fr>
- * @license  MIT <https://opensource.org/licenses/MIT>
- * @link     http://cscfa.fr
+ * @category                                     Test
+ * @package                                      Beotie_Core_Bundle
+ * @author                                       matthieu vallance <matthieu.vallance@cscfa.fr>
+ * @license                                      MIT <https://opensource.org/licenses/MIT>
+ * @link                                         http://cscfa.fr
+ * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  */
 class RequestUploadedFileAdapterTest extends TestCase
 {
@@ -175,7 +176,8 @@ class RequestUploadedFileAdapterTest extends TestCase
      *
      * This method validate the GenericRequestBag::getStream method
      *
-     * @return void
+     * @return                               void
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function testGetStream() : void
     {
