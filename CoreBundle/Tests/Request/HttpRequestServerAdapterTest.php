@@ -104,6 +104,62 @@ class HttpRequestServerAdapterTest extends TestCase
     }
 
     /**
+     * Method provider
+     *
+     * Return an array of 2 dimensions of string value to be used by the testGetMethod as testing data fixtures.
+     *
+     * @see    HttpRequestServerAdapterTest::testGetMethod
+     * @return [[string]]
+     */
+    public function methodProvider() : array
+    {
+        return [
+            ['POST'],
+            ['GET'],
+            ['PUT'],
+            ['PATCH'],
+            ['PING'],
+            ['CONNECT']
+        ];
+    }
+
+    /**
+     * Test getMethod
+     *
+     * Validate that the HttpRequestServerAdapter::getMethod return the result of the Request's getMethod() method.
+     *
+     * @param string $method The method expected to be returned by the HttpRequestServerAdapter::getMethod and injected
+     *                       into the Request instance
+     *
+     * @return       void
+     * @dataProvider methodProvider
+     */
+    public function testGetMethod(string $method) : void
+    {
+        $request = $this->getRequest(
+            [
+                [
+                    'expects' => $this->once(),
+                    'method' => 'getMethod',
+                    'willReturn' => $method
+                ]
+            ]
+        );
+
+        $reflex = new \ReflectionClass(HttpRequestServerAdapter::class);
+        $instance = $reflex->newInstanceWithoutConstructor();
+
+        $requestProperty = $reflex->getProperty('httpRequest');
+        $requestProperty->setAccessible(true);
+
+        $requestProperty->setValue($instance, $request);
+
+        $this->assertEquals($method, $instance->getMethod());
+
+        return;
+    }
+
+    /**
      * Get request
      *
      * Return an instance of Request mock that contain a ParameterBag mock in cookies, query and request properties
@@ -120,9 +176,11 @@ class HttpRequestServerAdapterTest extends TestCase
      *  // Usage with invokation mocker
      *  $this->getRequest(
      *      [
-     *          'expects'    => $this->any(),
-     *          'method'     => 'methodName',
-     *          'willReturn' => null
+     *          [
+     *              'expects'    => $this->any(),
+     *              'method'     => 'methodName',
+     *              'willReturn' => null
+     *          ]
      *      ]
      *  );
      * </pre>
