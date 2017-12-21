@@ -160,6 +160,60 @@ class HttpRequestServerAdapterTest extends TestCase
     }
 
     /**
+     * Request target provider
+     *
+     * Return an array of 2 dimensions of string value to be used by the testGetRequestTarget as testing data fixtures.
+     *
+     * @see    HttpRequestServerAdapterTest::testGetRequestTarget
+     * @return [[string]]
+     */
+    public function requestTargetProvider() : array
+    {
+        return [
+            ['/where?q=now'],
+            ['http://www.example.org/pub/WWW/TheProject.html'],
+            ['www.example.com:80']
+        ];
+    }
+
+    /**
+     * Test getRequestTarget
+     *
+     * Validate that the HttpRequestServerAdapter::getRequestTarget return the result of the Request's getRequestUri()
+     * method.
+     *
+     * @param string $requestTarget The request target expected to be returned by the
+     *                              HttpRequestServerAdapter::getRequestTarget and injected into the Request instance
+     *
+     * @return       void
+     * @dataProvider requestTargetProvider
+     */
+    public function testGetRequestTarget(string $requestTarget) : void
+    {
+        $request = $this->getRequest(
+            [
+                [
+                    'expects' => $this->once(),
+                    'method' => 'getRequestUri',
+                    'willReturn' => $requestTarget
+                ]
+            ]
+        );
+
+        $reflex = new \ReflectionClass(HttpRequestServerAdapter::class);
+        $instance = $reflex->newInstanceWithoutConstructor();
+
+        $requestProperty = $reflex->getProperty('httpRequest');
+        $requestProperty->setAccessible(true);
+
+        $requestProperty->setValue($instance, $request);
+
+        $this->assertEquals($requestTarget, $instance->getRequestTarget());
+
+        return;
+    }
+
+    /**
      * Get request
      *
      * Return an instance of Request mock that contain a ParameterBag mock in cookies, query and request properties
