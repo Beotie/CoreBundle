@@ -62,6 +62,9 @@ then
     mkdir -p "doc"
 fi
 
+test "$COMPOSER_PATH install" INSTALL 100
+echo "$TEST_RES" >> doc/composer.txt
+
 runner "$PHP_PATH vendor/bin/phpcbf --standard=./csruleset.xml CoreBundle/"
 echo "$TEST_RES" >> doc/phpcbf.txt
 
