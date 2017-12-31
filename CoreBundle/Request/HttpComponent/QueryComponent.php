@@ -69,7 +69,7 @@ trait QueryComponent
 
         $httpRequest->query->replace($query);
 
-        return new static($httpRequest);
+        return new static($httpRequest, $this->fileFactory);
     }
 
     /**

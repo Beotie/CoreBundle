@@ -43,7 +43,8 @@ class HttpRequestServerAdapterTest extends TestCase
 {
     use TestTrait\UriTestTrait,
         TestTrait\MethodTestTrait,
-        TestTrait\RequestTargetTestTrait;
+        TestTrait\RequestTargetTestTrait,
+        TestTrait\QueryTestTrait;
 
     /**
      * Test construct
