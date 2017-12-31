@@ -120,6 +120,11 @@ trait UriComponent
      */
     private function updateHostFromUri(Request $request, UriInterface $uri, bool $force) : void
     {
+        if (!$force) {
+            $request->headers->set('HOST', $this->httpRequest->getHost());
+            return;
+        }
+
         $uriHostComponent = $uri->getHost();
         if (empty($uriHostComponent)) {
             return;
@@ -129,10 +134,6 @@ trait UriComponent
 
         if (empty($host) && !empty($uriHostComponent)) {
             $request->headers->set('HOST', $uriHostComponent);
-            return;
-        }
-
-        if (!$force) {
             return;
         }
 

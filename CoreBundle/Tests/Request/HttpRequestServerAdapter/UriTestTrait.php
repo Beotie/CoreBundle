@@ -16,10 +16,11 @@ declare(strict_types=1);
  */
 namespace Beotie\CoreBundle\Tests\Request\HttpRequestServerAdapter;
 
-use Psr\Http\Message\UriInterface;
 use Beotie\CoreBundle\Request\File\Factory\EmbeddedFileFactoryInterface;
 use Beotie\CoreBundle\Request\HttpRequestServerAdapter;
 use PHPUnit\Framework\MockObject\MockObject;
+use Beotie\CoreBundle\Request\Uri\StringUri;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Uri test trait
@@ -35,36 +36,74 @@ use PHPUnit\Framework\MockObject\MockObject;
 trait UriTestTrait
 {
     /**
+     * Uri provider
+     *
+     * Return an array containing a set of array representing per appearance order, the string uri, the uri host, the
+     * base request host and the host preservation state, in order to test the HttpRequestServerAdapter::withUri
+     * method.
+     *
+     * @return [[string, string, string|null, bool]]
+     */
+    public function uriProvider()
+    {
+        return [
+            ['/uri', 'localhost', null, true],
+            ['/uri', 'localhost', null, false],
+            ['http://www.example.org/uri', 'www.example.org', null, true],
+            ['http://www.example.org/uri', 'www.example.org', null, false],
+            ['http://www.example.org/uri', 'www.example.org', 'www.exaple.org', true],
+            ['http://www.example.org/uri', 'www.example.org', 'www.exaple.org', false],
+            ['/uri', 'localhost', 'www.exaple.org', true],
+            ['/uri', 'localhost', 'www.exaple.org', false],
+        ];
+    }
+
+    /**
      * Test with uri
      *
      * This method validate the HttpRequestServerAdapter::withUri method
      *
-     * @return void
-     * @covers Beotie\CoreBundle\Request\HttpRequestServerAdapter::withUri
+     * @param string $uri          The string uri representation
+     * @param string $uriHost      The uri host
+     * @param string $requestHost  The base request host
+     * @param bool   $preserveHost The host preservation state
+     *
+     * @return       void
+     * @covers       Beotie\CoreBundle\Request\HttpRequestServerAdapter::withUri
+     * @covers       Beotie\CoreBundle\Request\HttpRequestServerAdapter::updateHostFromUri
+     * @dataProvider uriProvider
      */
-    public function testWithUri()
+    public function testWithUri(string $uri, string $uriHost, string $requestHost = null, bool $preserveHost) : void
     {
-        $httpRequest = $this->getRequest();
+        $httpRequest = $this->getRequest(
+            [
+                'getHost' => $requestHost
+            ]
+        );
 
-        $uri = $this->createMock(UriInterface::class);
-        $uri->expects($this->once())
-            ->method('__toString')
-            ->willReturn('/URI');
+        $uriObject = new StringUri($uri);
+        $this->getTestCase()->assertEquals($uri, (string)$uriObject);
 
         $fileFactory = $this->createMock(EmbeddedFileFactoryInterface::class);
 
         $instance = new HttpRequestServerAdapter($httpRequest, $fileFactory);
 
-        $newRequest = $instance->withUri($uri);
+        $newRequest = $instance->withUri($uriObject, $preserveHost);
         $this->assertInstanceOf(HttpRequestServerAdapter::class, $newRequest);
 
         $requestProperty = new \ReflectionProperty(HttpRequestServerAdapter::class, 'httpRequest');
         $requestProperty->setAccessible(true);
         $innerRequest = $requestProperty->getValue($newRequest);
 
-        $this->assertSame('/URI', $innerRequest->getPathInfo());
-        $this->assertNotSame($httpRequest, $innerRequest);
+        $this->getTestCase()->assertEquals(parse_url($uri, PHP_URL_PATH), $innerRequest->getPathInfo());
+        $this->getTestCase()->assertNotSame($httpRequest, $innerRequest);
 
+        if ($preserveHost) {
+            $this->getTestCase()->assertEquals($requestHost, $innerRequest->headers->get('HOST'));
+            return;
+        }
+
+        $this->getTestCase()->assertEquals($uriHost, $innerRequest->headers->get('HOST'));
         return;
     }
 
@@ -73,9 +112,11 @@ trait UriTestTrait
      *
      * Return an instance of Request mock that contain a ParameterBag mock in cookies, query and request properties
      * and contain a FileBag mock in file property and contain a ServerBag mock in server property.
-     * For each properties, the instance will return an empty array for each call to the all() method.
+     * For each properties, the instance will be configured with the according key given bag options. If the
+     * configuration is not specified, the instance will return an empty array for each call of all() method.
      *
      * @param array $parameters An array of parameters to create invokation mocker into the returned instance
+     * @param array $bagOptions An array containing the bag invocation configuration
      *
      * @return  MockObject
      * @example <pre>
@@ -92,7 +133,32 @@ trait UriTestTrait
      *          ]
      *      ]
      *  );
+     *
+     *  // Usage with bag invokation configuration
+     *  $this->getRequest(
+     *      [],
+     *      [
+     *          'server' => ['all' => []],
+     *          'query' => ['any all' => []],
+     *          'request' => [
+     *              [
+     *                  'expects'    => $this->any(),
+     *                  'method'     => 'all',
+     *                  'willReturn' => []
+     *              ]
+     *          ]
+     *      ]
+     *  );
      * </pre>
      */
-    protected abstract function getRequest(array $parameters = []) : MockObject;
+    protected abstract function getRequest(array $parameters = [], array $bagOptions = []) : MockObject;
+
+    /**
+     * Get test case
+     *
+     * Return an instance of TestCase
+     *
+     * @return TestCase
+     */
+    protected abstract function getTestCase() : TestCase;
 }

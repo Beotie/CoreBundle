@@ -18,6 +18,7 @@ namespace Beotie\CoreBundle\Tests\Request\HttpRequestServerAdapter;
 
 use Beotie\CoreBundle\Request\HttpRequestServerAdapter;
 use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Method test trait
@@ -83,7 +84,7 @@ trait MethodTestTrait
 
         $requestProperty->setValue($instance, $request);
 
-        $this->assertEquals($method, $instance->getMethod());
+        $this->getTestCase()->assertEquals($method, $instance->getMethod());
 
         return;
     }
@@ -93,9 +94,11 @@ trait MethodTestTrait
      *
      * Return an instance of Request mock that contain a ParameterBag mock in cookies, query and request properties
      * and contain a FileBag mock in file property and contain a ServerBag mock in server property.
-     * For each properties, the instance will return an empty array for each call to the all() method.
+     * For each properties, the instance will be configured with the according key given bag options. If the
+     * configuration is not specified, the instance will return an empty array for each call of all() method.
      *
      * @param array $parameters An array of parameters to create invokation mocker into the returned instance
+     * @param array $bagOptions An array containing the bag invocation configuration
      *
      * @return  MockObject
      * @example <pre>
@@ -112,7 +115,32 @@ trait MethodTestTrait
      *          ]
      *      ]
      *  );
+     *
+     *  // Usage with bag invokation configuration
+     *  $this->getRequest(
+     *      [],
+     *      [
+     *          'server' => ['all' => []],
+     *          'query' => ['any all' => []],
+     *          'request' => [
+     *              [
+     *                  'expects'    => $this->any(),
+     *                  'method'     => 'all',
+     *                  'willReturn' => []
+     *              ]
+     *          ]
+     *      ]
+     *  );
      * </pre>
      */
-    protected abstract function getRequest(array $parameters = []) : MockObject;
+    protected abstract function getRequest(array $parameters = [], array $bagOptions = []) : MockObject;
+
+    /**
+     * Get test case
+     *
+     * Return an instance of TestCase
+     *
+     * @return TestCase
+     */
+    protected abstract function getTestCase() : TestCase;
 }
