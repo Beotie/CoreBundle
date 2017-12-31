@@ -82,17 +82,17 @@ trait RequestTargetComponent
      */
     public function withRequestTarget($requestTarget)
     {
-        $parameters = array_merge($httpRequest->query->all(), $httpRequest->request->all());
+        $parameters = array_merge($this->httpRequest->query->all(), $this->httpRequest->request->all());
         $httpRequest = Request::create(
             $requestTarget,
-            $httpRequest->getMethod(),
+            $this->httpRequest->getMethod(),
             $parameters,
-            $httpRequest->cookies->all(),
-            $httpRequest->files->all(),
-            $httpRequest->server->all(),
-            $httpRequest->getContent()
+            $this->httpRequest->cookies->all(),
+            $this->httpRequest->files->all(),
+            $this->httpRequest->server->all(),
+            $this->httpRequest->getContent()
         );
 
-        return new static($httpRequest);
+        return new static($httpRequest, $this->fileFactory);
     }
 }

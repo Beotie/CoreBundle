@@ -19,6 +19,7 @@ namespace Beotie\CoreBundle\Tests\Request\HttpRequestServerAdapter;
 use Beotie\CoreBundle\Request\HttpRequestServerAdapter;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Beotie\CoreBundle\Request\File\Factory\EmbeddedFileFactoryInterface;
 
 /**
  * Request target test trait
@@ -51,6 +52,70 @@ trait RequestTargetTestTrait
     }
 
     /**
+     * Test withRequestTarget
+     *
+     * This method validate the HttpRequestServerAdapter::withRequestTarget method
+     *
+     * @param string $requestTarget The request target to be used as new request target
+     *
+     * @return       void
+     * @covers       Beotie\CoreBundle\Request\HttpRequestServerAdapter::withRequestTarget
+     * @dataProvider requestTargetProvider
+     */
+    public function testWithRequestTarget(string $requestTarget) : void
+    {
+        $request = $this->getRequest();
+        $fileFactory = $this->createMock(EmbeddedFileFactoryInterface::class);
+
+        $reflex = new \ReflectionClass(HttpRequestServerAdapter::class);
+        $instance = $reflex->newInstanceWithoutConstructor();
+
+        $requestProperty = $reflex->getProperty('httpRequest');
+        $requestProperty->setAccessible(true);
+        $requestProperty->setValue($instance, $request);
+
+        $fileFactoryProperty = $reflex->getProperty('fileFactory');
+        $fileFactoryProperty->setAccessible(true);
+        $fileFactoryProperty->setValue($instance, $fileFactory);
+
+        $newRequest = $instance->withRequestTarget($requestTarget);
+        $innerRequest = $requestProperty->getValue($newRequest);
+
+        $this->getTestCase()->assertNotSame($innerRequest, $request);
+        $this->getTestCase()->assertEquals($this->gessRequestTarget($requestTarget), $innerRequest->getUri());
+
+        return;
+    }
+
+    /**
+     * Guess request target
+     *
+     * Return the requestTarget as server understandable request string. By this way, add localhost as host if not
+     * defined, add http scheme if not defined and remove port.
+     *
+     * @param string $baseRequest The base request to guess
+     *
+     * @return string
+     */
+    protected function gessRequestTarget(string $baseRequest) : string
+    {
+        $result = $baseRequest;
+        $parsingResult = parse_url($baseRequest);
+
+        if ($parsingResult['host'] === null) {
+            $result = sprintf('localhost%s', $result);
+        }
+        if ($parsingResult['scheme'] === null) {
+            $result = sprintf('http://%s', $result);
+        }
+        if (!$parsingResult['path']) {
+            $result = sprintf('%s/', $result);
+        }
+
+        return preg_replace('/:[0-9]+/', '', $result);
+    }
+
+    /**
      * Test getRequestTarget
      *
      * Validate that the HttpRequestServerAdapter::getRequestTarget return the result of the Request's getRequestUri()
@@ -60,6 +125,7 @@ trait RequestTargetTestTrait
      *                              HttpRequestServerAdapter::getRequestTarget and injected into the Request instance
      *
      * @return       void
+     * @covers       Beotie\CoreBundle\Request\HttpRequestServerAdapter::getRequestTarget
      * @dataProvider requestTargetProvider
      */
     public function testGetRequestTarget(string $requestTarget) : void
