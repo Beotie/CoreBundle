@@ -59,6 +59,33 @@ trait UriTestTrait
     }
 
     /**
+     * Test getUri
+     *
+     * This method validate the HttpRequestServerAdapter::getUri method
+     *
+     * @param string $uri The expected uri result
+     *
+     * @return       void
+     * @covers       Beotie\CoreBundle\Request\HttpRequestServerAdapter::getUri
+     * @dataProvider uriProvider
+     */
+    public function testGetUri(string $uri) : void
+    {
+        $httpRequest = $this->getRequest(
+            [
+                'getUri' => $uri
+            ]
+        );
+
+        $fileFactory = $this->createMock(EmbeddedFileFactoryInterface::class);
+        $instance = new HttpRequestServerAdapter($httpRequest, $fileFactory);
+
+        $this->getTestCase()->assertEquals($uri, $instance->getUri());
+
+        return;
+    }
+
+    /**
      * Test with uri
      *
      * This method validate the HttpRequestServerAdapter::withUri method
