@@ -101,9 +101,9 @@ trait RequestTargetTestTrait
     {
         $result = $baseRequest;
         $parsingResult = parse_url($baseRequest);
-        $parsingResult['host'] = $parsingResult['host'] ?? null;
-        $parsingResult['scheme'] = $parsingResult['scheme'] ?? null;
-        $parsingResult['path'] = $parsingResult['path'] ?? null;
+        $parsingResult['host'] = ($parsingResult['host'] ?? null);
+        $parsingResult['scheme'] = ($parsingResult['scheme'] ?? null);
+        $parsingResult['path'] = ($parsingResult['path'] ?? null);
 
         if ($parsingResult['host'] === null) {
             $result = sprintf('localhost%s', $result);
