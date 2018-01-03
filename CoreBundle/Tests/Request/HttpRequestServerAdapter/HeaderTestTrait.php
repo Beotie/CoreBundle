@@ -51,6 +51,52 @@ trait HeaderTestTrait
     }
 
     /**
+     * Test withHeader
+     *
+     * This method validate the HttpRequestServerAdapter::withHeader method
+     *
+     * @return void
+     * @covers Beotie\CoreBundle\Request\HttpRequestServerAdapter::withHeader
+     */
+    public function testWithHeader()
+    {
+        $newRequest = $this->getRequest(
+            [],
+            [
+                'headers' => [
+                    [
+                        'expects' => $this->getTestCase()->once(),
+                        'method' => 'set',
+                        'with' => [
+                            $this->getTestCase()->equalTo('HTTP_HEADER'),
+                            $this->getTestCase()->equalTo('value')
+                        ]
+                    ]
+                ]
+            ]
+        );
+
+        $request = $this->getRequest(
+            [
+                'duplicate' => $newRequest
+            ]
+        );
+
+        $fileFactory = $this->createMock(EmbeddedFileFactoryInterface::class);
+        $instance = new HttpRequestServerAdapter($request, $fileFactory);
+
+        $newInstance = $instance->withHeader('HTTP_HEADER', 'value');
+
+        $requestProperty = new \ReflectionProperty(HttpRequestServerAdapter::class, 'httpRequest');
+        $requestProperty->setAccessible(true);
+
+        $this->getTestCase()->assertSame($request, $requestProperty->getValue($instance));
+        $this->getTestCase()->assertSame($newRequest, $requestProperty->getValue($newInstance));
+        $this->getTestCase()->assertNotSame($request, $requestProperty->getValue($newInstance));
+        $this->getTestCase()->assertNotSame($newRequest, $requestProperty->getValue($instance));
+    }
+
+    /**
      * Test getHeaders
      *
      * This method validate the HttpRequestServerAdapter::getHeaders method
@@ -146,7 +192,8 @@ trait HeaderTestTrait
                         'method' => 'set',
                         'with' => [
                             $this->getTestCase()->equalTo('HTTP_HEADER'),
-                            $this->getTestCase()->equalTo('value')
+                            $this->getTestCase()->equalTo('value'),
+                            $this->getTestCase()->isFalse()
                         ]
                     ]
                 ]
