@@ -56,13 +56,13 @@ trait HeaderComponent
      */
     public function withoutHeader($name)
     {
-        $httpRequest = $this->duplicate();
+        $httpRequest = $this->requestDuplicate();
 
         if ($httpRequest->headers->has($name)) {
             $httpRequest->headers->remove($name);
         }
 
-        return new static($httpRequest);
+        return new static($httpRequest, $this->fileFactory);
     }
 
     /**
@@ -231,13 +231,13 @@ trait HeaderComponent
     }
 
     /**
-     * Duplicate
+     * Request duplicate
      *
      * This method duplicate the current inner request and override the specified parameters
      *
      * @param array $param The parameters to override
      *
-     * @return HttpRequestServerAdapter
+     * @return Request
      */
-    protected abstract function duplicate(array $param = []) : HttpRequestServerAdapter;
+    protected abstract function requestDuplicate(array $param = []) : Request;
 }

@@ -28,6 +28,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use Beotie\CoreBundle\Tests\Request\HttpRequestServerAdapter as TestTrait;
 use Symfony\Component\OptionsResolver\Exception\InvalidArgumentException;
 use PHPUnit\Framework\MockObject\Builder\InvocationMocker;
+use Symfony\Component\HttpFoundation\HeaderBag;
 
 /**
  * HttpRequestServerAdapter test
@@ -46,7 +47,8 @@ class HttpRequestServerAdapterTest extends TestCase
         TestTrait\MethodTestTrait,
         TestTrait\RequestTargetTestTrait,
         TestTrait\QueryTestTrait,
-        TestTrait\ProtocolTestTrait;
+        TestTrait\ProtocolTestTrait,
+        TestTrait\HeaderTestTrait;
 
     /**
      * Test construct
@@ -177,6 +179,10 @@ class HttpRequestServerAdapterTest extends TestCase
         $this->createInvocation($server, ($bagOptions['server'] ?? $fallbackBagOptions));
         $this->createInvocation($server, [['expects'=>$this->any(), 'method'=>'get']]);
         $httpRequest->server = $server;
+
+        $headers = $this->createMock(HeaderBag::class);
+        $this->createInvocation($headers, ($bagOptions['headers'] ?? $fallbackBagOptions));
+        $httpRequest->headers = $headers;
 
         return $httpRequest;
     }

@@ -44,13 +44,27 @@ trait DuplicationComponent
     /**
      * Duplicate
      *
-     * This method duplicate the current inner request and override the specified parameters
+     * This method duplicate the current request and override the specified parameters
      *
      * @param array $param The parameters to override
      *
      * @return HttpRequestServerAdapter
      */
     protected function duplicate(array $param = []) : HttpRequestServerAdapter
+    {
+        return new static($this->requestDuplicate($param), $this->fileFactory);
+    }
+
+    /**
+     * Request duplicate
+     *
+     * This method duplicate the current inner request and override the specified parameters
+     *
+     * @param array $param The parameters to override
+     *
+     * @return Request
+     */
+    protected function requestDuplicate(array $param = []) : Request
     {
         $query = null;
         $request = null;
@@ -71,6 +85,6 @@ trait DuplicationComponent
 
         $request = $this->httpRequest->duplicate($query, $request, $attributes, $cookies, $files, $server);
 
-        return new static($request, $this->fileFactory);
+        return $request;
     }
 }
