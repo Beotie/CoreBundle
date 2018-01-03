@@ -129,7 +129,7 @@ trait HeaderComponent
         $headers = $this->httpRequest->headers->all();
         $headers = array_change_key_case($headers, CASE_UPPER);
 
-        if (in_array($name, $headers)) {
+        if (array_key_exists($name, $headers)) {
             $result = $headers[$name];
 
             if (!is_array($result)) {

@@ -51,6 +51,67 @@ trait HeaderTestTrait
     }
 
     /**
+     * Test getHeader
+     *
+     * This method validate the HttpRequestServerAdapter::getHeader method
+     *
+     * @param string       $header The header key to be used at method call
+     * @param string|array $value  The header value to be injected into the header bag
+     *
+     * @return       void
+     * @covers       Beotie\CoreBundle\Request\HttpRequestServerAdapter::getHeader
+     * @dataProvider headerProvider
+     */
+    public function testGetHeader(string $header, $value) : void
+    {
+        $testCase = $this->getTestCase();
+        $request = $this->getRequest(
+            [],
+            [
+                'headers' => [
+                    [
+                        'expects' => $testCase->exactly(6),
+                        'method' => 'all',
+                        'willReturnOnConsecutiveCalls' => [
+                            [$header => $value],
+                            [$header => $value],
+                            [strtolower($header) => $value],
+                            [strtolower($header) => $value],
+                            [substr($header, 0, (strlen($header) - 1)) => $value],
+                            [substr($header, 0, (strlen($header) - 1)) => $value]
+                        ]
+                    ]
+                ]
+            ]
+        );
+
+        if (!is_array($value)) {
+            $value = [$value];
+        }
+
+        $map = [
+            [$value, $header, 'Failed to retreive normal header'],
+            [$value, strtolower($header), 'Failed to retreive lower case given header header'],
+            [$value, $header, 'Failed to retreive lower case stored header'],
+            [$value, strtolower($header), 'Failed to retreive both lower case header'],
+            [[], $header, 'Failed to return empty array'],
+            [[], strtolower($header), 'Failed to return empty array with lower case given header']
+        ];
+
+        $fileFactory = $this->createMock(EmbeddedFileFactoryInterface::class);
+        $instance = new HttpRequestServerAdapter($request, $fileFactory);
+        foreach ($map as $testStep) {
+            list($expectation, $argument, $message) = $testStep;
+            $result = $instance->getHeader($argument);
+
+            $testCase->assertTrue(is_array($result));
+            $testCase->assertEquals($expectation, $result, $message);
+        }
+
+        return;
+    }
+
+    /**
      * Test getHeaderLine
      *
      * This method validate the HttpRequestServerAdapter::getHeaderLine method
