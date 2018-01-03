@@ -44,7 +44,8 @@ class HttpRequestServerAdapterTest extends TestCase
     use TestTrait\UriTestTrait,
         TestTrait\MethodTestTrait,
         TestTrait\RequestTargetTestTrait,
-        TestTrait\QueryTestTrait;
+        TestTrait\QueryTestTrait,
+        TestTrait\ProtocolTestTrait;
 
     /**
      * Test construct
@@ -296,8 +297,8 @@ class HttpRequestServerAdapterTest extends TestCase
     /**
      * Get param resolver
      *
-     * Return an OptionsResolver instance that contain 'expects', 'method', 'with', 'will' and 'willReturn' as
-     * defined, and contain 'expects' as required.
+     * Return an OptionsResolver instance that contain InvocationMocker methods as defined, and contain 'expects' as
+     * required.
      *
      * @return OptionsResolver
      */
@@ -309,11 +310,24 @@ class HttpRequestServerAdapterTest extends TestCase
         $resolver->setDefined(
             [
                 'method',
-                'with',
                 'will',
-                'willReturn'
+                'willReturn',
+                'willReturnReference',
+                'willReturnMap',
+                'willReturnArgument',
+                'willReturnCallback',
+                'willReturnSelf',
+                'willReturnOnConsecutiveCalls',
+                'willThrowException',
+                'with',
+                'withConsecutive',
+                'withAnyParameters'
             ]
         );
+
+        $resolver->setAllowedTypes('willReturnMap', 'array');
+        $resolver->setAllowedValues('willReturnSelf', [true]);
+        $resolver->setAllowedValues('withAnyParameters', [true]);
 
         return $resolver;
     }
