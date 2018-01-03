@@ -295,7 +295,7 @@ class HttpRequestServerAdapterTest extends TestCase
             return;
         }
 
-        if (preg_match('/^with/', $argumentName) && is_array($argumentValue)) {
+        if (preg_match('/(^with)|(Consecutive)/', $argumentName) && is_array($argumentValue)) {
             call_user_func_array([$invoker, $argumentName], $argumentValue);
             return;
         }

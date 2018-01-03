@@ -35,6 +35,78 @@ use Beotie\CoreBundle\Request\HttpRequestServerAdapter;
 trait HeaderTestTrait
 {
     /**
+     * Header provider
+     *
+     * Return a set of array containing by appearance order a header key as string, a header value as string or array
+     * and a value as string representing the result of the HttpRequestServerAdapter::getHeaderLine method.
+     *
+     * @return [[string, string|array, string]]
+     */
+    public function headerProvider() : array
+    {
+        return [
+            ['HTTP_HEADER', 'value', 'value'],
+            ['HTTP_HEADER', ['value1', 'value2'], 'value1,value2']
+        ];
+    }
+
+    /**
+     * Test getHeaderLine
+     *
+     * This method validate the HttpRequestServerAdapter::getHeaderLine method
+     *
+     * @param string       $header         The header key to be used at method call
+     * @param string|array $value          The header value to be injected into the header bag
+     * @param string       $expectedResult The expected result of the method call
+     *
+     * @return       void
+     * @covers       Beotie\CoreBundle\Request\HttpRequestServerAdapter::getHeaderLine
+     * @dataProvider headerProvider
+     */
+    public function testGetHeaderLine(string $header, $value, string $expectedResult) : void
+    {
+        $testCase = $this->getTestCase();
+        $request = $this->getRequest(
+            [],
+            [
+                'headers' => [
+                    [
+                        'expects' => $testCase->exactly(6),
+                        'method' => 'all',
+                        'willReturnOnConsecutiveCalls' => [
+                            [$header => $value],
+                            [$header => $value],
+                            [strtolower($header) => $value],
+                            [strtolower($header) => $value],
+                            [substr($header, 0, (strlen($header) - 1)) => $value],
+                            [substr($header, 0, (strlen($header) - 1)) => $value]
+                        ]
+                    ]
+                ]
+            ]
+        );
+
+        $fileFactory = $this->createMock(EmbeddedFileFactoryInterface::class);
+        $instance = new HttpRequestServerAdapter($request, $fileFactory);
+
+        $map = [
+            [$expectedResult, $header, 'Failed to retreive normal header'],
+            [$expectedResult, strtolower($header), 'Failed to retreive lower case given header header'],
+            [$expectedResult, $header, 'Failed to retreive lower case stored header'],
+            [$expectedResult, strtolower($header), 'Failed to retreive both lower case header'],
+            ['', $header, 'Failed to return empty string'],
+            ['', strtolower($header), 'Failed to return empty string with lower case given header']
+        ];
+
+        foreach ($map as $testStep) {
+            list($expectation, $argument, $message) = $testStep;
+            $testCase->assertEquals($expectation, $instance->getHeaderLine($argument), $message);
+        }
+
+        return;
+    }
+
+    /**
      * Test withoutHeader
      *
      * This method validate the HttpRequestServerAdapter::withoutHeader method
