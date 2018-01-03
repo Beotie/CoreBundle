@@ -51,6 +51,25 @@ trait HeaderTestTrait
     }
 
     /**
+     * Test getHeaders
+     *
+     * This method validate the HttpRequestServerAdapter::getHeaders method
+     *
+     * @return void
+     * @covers Beotie\CoreBundle\Request\HttpRequestServerAdapter::getHeaders
+     */
+    public function testGetHeaders()
+    {
+        $headers = ['PROTOCOL_VERSION' => '1.0', 'HTTP_HEADER' => 'Header'];
+        $request = $this->getRequest([], ['headers' => ['all' => $headers]]);
+
+        $fileFactory = $this->createMock(EmbeddedFileFactoryInterface::class);
+        $instance = new HttpRequestServerAdapter($request, $fileFactory);
+
+        $this->getTestCase()->assertEquals($headers, $instance->getHeaders());
+    }
+
+    /**
      * Test hasHeader
      *
      * This method validate the HttpRequestServerAdapter::hasHeader method
