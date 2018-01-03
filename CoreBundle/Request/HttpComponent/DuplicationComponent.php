@@ -83,8 +83,6 @@ trait DuplicationComponent
             }
         }
 
-        $request = $this->httpRequest->duplicate($query, $request, $attributes, $cookies, $files, $server);
-
-        return $request;
+        return $this->httpRequest->duplicate($query, $request, $attributes, $cookies, $files, $server);
     }
 }

@@ -159,7 +159,10 @@ trait HeaderComponent
      */
     public function withAddedHeader($name, $value)
     {
-        return $this->duplicate(['headers' => [$name => $value]]);
+        $request = $this->requestDuplicate();
+        $request->headers->set($name, $value);
+
+        return new static($request, $this->fileFactory);
     }
 
     /**

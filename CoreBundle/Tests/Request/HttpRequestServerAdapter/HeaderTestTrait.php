@@ -51,6 +51,52 @@ trait HeaderTestTrait
     }
 
     /**
+     * Test withAddedHeader
+     *
+     * This method validate the HttpRequestServerAdapter::withAddedHeader method
+     *
+     * @return void
+     * @covers Beotie\CoreBundle\Request\HttpRequestServerAdapter::withAddedHeader
+     */
+    public function testWithAddedHeader()
+    {
+        $newRequest = $this->getRequest(
+            [],
+            [
+                'headers' => [
+                    [
+                        'expects' => $this->getTestCase()->once(),
+                        'method' => 'set',
+                        'with' => [
+                            $this->getTestCase()->equalTo('HTTP_HEADER'),
+                            $this->getTestCase()->equalTo('value')
+                        ]
+                    ]
+                ]
+            ]
+        );
+
+        $request = $this->getRequest(
+            [
+                'duplicate' => $newRequest
+            ]
+        );
+
+        $fileFactory = $this->createMock(EmbeddedFileFactoryInterface::class);
+        $instance = new HttpRequestServerAdapter($request, $fileFactory);
+
+        $newInstance = $instance->withAddedHeader('HTTP_HEADER', 'value');
+
+        $requestProperty = new \ReflectionProperty(HttpRequestServerAdapter::class, 'httpRequest');
+        $requestProperty->setAccessible(true);
+
+        $this->getTestCase()->assertSame($request, $requestProperty->getValue($instance));
+        $this->getTestCase()->assertSame($newRequest, $requestProperty->getValue($newInstance));
+        $this->getTestCase()->assertNotSame($request, $requestProperty->getValue($newInstance));
+        $this->getTestCase()->assertNotSame($newRequest, $requestProperty->getValue($instance));
+    }
+
+    /**
      * Test getHeader
      *
      * This method validate the HttpRequestServerAdapter::getHeader method
