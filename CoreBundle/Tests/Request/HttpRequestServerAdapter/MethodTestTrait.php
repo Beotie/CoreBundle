@@ -19,6 +19,7 @@ namespace Beotie\CoreBundle\Tests\Request\HttpRequestServerAdapter;
 use Beotie\CoreBundle\Request\HttpRequestServerAdapter;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Beotie\CoreBundle\Request\File\Factory\EmbeddedFileFactoryInterface;
 
 /**
  * Method test trait
@@ -54,6 +55,36 @@ trait MethodTestTrait
     }
 
     /**
+     * Test withMethod
+     *
+     * This method validate the HttpRequestServerAdapter::withMethod method
+     *
+     * @param string $method The method to use as method argument
+     *
+     * @return void
+     * @covers       Beotie\CoreBundle\Request\HttpRequestServerAdapter::withMethod
+     * @dataProvider methodProvider
+     */
+    public function testWithMethod(string $method) : void
+    {
+        $request = $this->getRequest();
+        $fileFactory = $this->createMock(EmbeddedFileFactoryInterface::class);
+        $instance = new HttpRequestServerAdapter($request, $fileFactory);
+
+        $newInstance = $instance->withMethod($method);
+
+        $this->getTestCase()->assertNotSame($instance, $newInstance);
+
+        $requestProperty = new \ReflectionProperty(HttpRequestServerAdapter::class, 'httpRequest');
+        $requestProperty->setAccessible(true);
+        $innerRequest = $requestProperty->getValue($newInstance);
+
+        $this->getTestCase()->assertNotSame($request, $innerRequest);
+        $this->getTestCase()->assertEquals($method, $innerRequest->getMethod());
+        return;
+    }
+
+    /**
      * Test getMethod
      *
      * Validate that the HttpRequestServerAdapter::getMethod return the result of the Request's getMethod() method.
@@ -62,6 +93,7 @@ trait MethodTestTrait
      *                       into the Request instance
      *
      * @return       void
+     * @covers       Beotie\CoreBundle\Request\HttpRequestServerAdapter::getMethod
      * @dataProvider methodProvider
      */
     public function testGetMethod(string $method) : void

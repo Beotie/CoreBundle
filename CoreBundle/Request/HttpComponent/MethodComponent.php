@@ -74,13 +74,15 @@ trait MethodComponent
 
         return new static(
             Request::create(
+                $httpRequest->getRequestUri(),
                 $method,
                 $parameters,
                 $httpRequest->cookies->all(),
                 $httpRequest->files->all(),
                 $httpRequest->server->all(),
                 $httpRequest->getContent()
-            )
+            ),
+            $this->fileFactory
         );
     }
 }
