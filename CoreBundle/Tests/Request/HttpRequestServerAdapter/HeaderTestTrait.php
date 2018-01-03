@@ -51,6 +51,64 @@ trait HeaderTestTrait
     }
 
     /**
+     * Test hasHeader
+     *
+     * This method validate the HttpRequestServerAdapter::hasHeader method
+     *
+     * @param string $header The header key to be used at method call
+     *
+     * @return       void
+     * @covers       Beotie\CoreBundle\Request\HttpRequestServerAdapter::hasHeader
+     * @dataProvider headerProvider
+     */
+    public function testHasHeader(string $header)
+    {
+        $testCase = $this->getTestCase();
+        $request = $this->getRequest(
+            [],
+            [
+                'headers' => [
+                    [
+                        'expects' => $testCase->exactly(6),
+                        'method' => 'all',
+                        'willReturnOnConsecutiveCalls' => [
+                            [$header => ''],
+                            [$header => ''],
+                            [strtolower($header) => ''],
+                            [strtolower($header) => ''],
+                            [substr($header, 0, (strlen($header) - 1)) => ''],
+                            [substr($header, 0, (strlen($header) - 1)) => '']
+                        ]
+                    ]
+                ]
+            ]
+        );
+
+        $map = [
+            [true, $header, 'Failed to retreive normal header'],
+            [true, strtolower($header), 'Failed to retreive lower case given header header'],
+            [true, $header, 'Failed to retreive lower case stored header'],
+            [true, strtolower($header), 'Failed to retreive both lower case header'],
+            [false, $header, 'Failed to return false'],
+            [false, strtolower($header), 'Failed to return false with lower case given header']
+        ];
+
+        $fileFactory = $this->createMock(EmbeddedFileFactoryInterface::class);
+        $instance = new HttpRequestServerAdapter($request, $fileFactory);
+        foreach ($map as $testStep) {
+            list($expectation, $argument, $message) = $testStep;
+
+            if ($expectation) {
+                $testCase->assertTrue($instance->hasHeader($argument), $message);
+                continue;
+            }
+            $testCase->assertFalse($instance->hasHeader($argument), $message);
+        }
+
+        return;
+    }
+
+    /**
      * Test withAddedHeader
      *
      * This method validate the HttpRequestServerAdapter::withAddedHeader method

@@ -160,7 +160,7 @@ trait HeaderComponent
     public function withAddedHeader($name, $value)
     {
         $request = $this->requestDuplicate();
-        $request->headers->set($name, $value);
+        $request->headers->set($name, $value, false);
 
         return new static($request, $this->fileFactory);
     }
@@ -179,7 +179,7 @@ trait HeaderComponent
         $headers = $this->httpRequest->headers->all();
         $headers = array_change_key_case($headers, CASE_UPPER);
 
-        return array_key_exists($name, $headers);
+        return array_key_exists(strtoupper($name), $headers);
     }
 
     /**
@@ -230,7 +230,10 @@ trait HeaderComponent
      */
     public function withHeader($name, $value)
     {
-        return $this->duplicate(['server' => [$name => $value]]);
+        $request = $this->requestDuplicate();
+        $request->headers->set($name, $value);
+
+        return new static($request, $this->fileFactory);
     }
 
     /**

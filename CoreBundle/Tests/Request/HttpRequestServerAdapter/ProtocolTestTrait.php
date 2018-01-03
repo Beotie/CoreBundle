@@ -208,6 +208,13 @@ trait ProtocolTestTrait
             ];
         }
 
+        $request->headers->expects($this->getTestCase()->once())
+            ->method('set')
+            ->with(
+                $this->getTestCase()->equalTo('SERVER_PROTOCOL'),
+                $this->getTestCase()->equalTo($protocol)
+            );
+
         return [
             [
                 'expects' => $testCase->once(),
@@ -218,11 +225,7 @@ trait ProtocolTestTrait
                     $testCase->equalTo([]),
                     $testCase->equalTo([]),
                     $testCase->equalTo([]),
-                    $testCase->equalTo(
-                        [
-                            'SERVER_PROTOCOL' => $protocol
-                        ]
-                    )
+                    $testCase->equalTo([])
                 ],
                 'willReturn' => $request
             ]
