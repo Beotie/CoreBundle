@@ -35,13 +35,72 @@ use Beotie\CoreBundle\Request\HttpRequestServerAdapter;
 trait ProtocolTestTrait
 {
     /**
+     * Protocol version provider
+     *
+     * Return an array containing a set of array representing per appearance order, the protocol version and the
+     * exception expecting state, in order to test the HttpRequestServerAdapter::withProtocolVersion
+     * method.
+     *
+     * @return string[][]|boolean[][]
+     */
+    public function protocolVersionProvider()
+    {
+        return [
+            ['1.0', false],
+            ['1.1', false],
+            ['2', false],
+            ['.1', true],
+            ['azerty', true],
+            ['1.0.0', false]
+        ];
+    }
+
+    /**
+     * Test withProtocolVersion
+     *
+     * This method validate the HttpRequestServerAdapter::withProtocolVersion method
+     *
+     * @param string $protocol       The new request protocol version number
+     * @param bool   $throwException The expecting exception state of the method call
+     *
+     * @return       void
+     * @covers       Beotie\CoreBundle\Request\HttpRequestServerAdapter::withProtocolVersion
+     * @dataProvider protocolVersionProvider
+     */
+    public function testWithProtocolVersion(string $protocol, bool $throwException) : void
+    {
+        $testCase = $this->getTestCase();
+
+        if ($throwException) {
+            $testCase->expectException(\RuntimeException::class);
+            $testCase->expectExceptionMessage(
+                'The version string MUST contain only the HTTP version number (e.g., "1.1", "1.0").'
+            );
+        }
+
+        $newRequest = $this->getRequest();
+        $request = $this->getRequest($this->guessRequestArgByProtocol($throwException, $newRequest, $protocol));
+
+        $fileFactory = $this->createMock(EmbeddedFileFactoryInterface::class);
+        $instance = new HttpRequestServerAdapter($request, $fileFactory);
+
+        $requestProperty = new \ReflectionProperty(HttpRequestServerAdapter::class, 'httpRequest');
+        $requestProperty->setAccessible(true);
+
+        $updatedInstance = $instance->withProtocolVersion($protocol);
+        $testCase->assertInstanceOf(HttpRequestServerAdapter::class, $updatedInstance);
+        $testCase->assertNotSame($instance, $updatedInstance);
+
+        $testCase->assertSame($newRequest, $requestProperty->getValue($updatedInstance));
+    }
+
+    /**
      * Test getProtocolVersion
      *
      * This method validate the HttpRequestServerAdapter::getProtocolVersion method
      *
-     * @return       void
-     * @covers       Beotie\CoreBundle\Request\HttpRequestServerAdapter::getProtocolVersion
-     * @dataProvider uriProvider
+     * @return void
+     * @covers Beotie\CoreBundle\Request\HttpRequestServerAdapter::getProtocolVersion
      */
     public function testGetProtocolVersion() : void
     {
@@ -121,4 +180,52 @@ trait ProtocolTestTrait
      * @return TestCase
      */
     protected abstract function getTestCase() : TestCase;
+
+    /**
+     * Guess request argument by protocol
+     *
+     * Return an invokation mocker configuration that contain a never expectation as 'expects' key in case of true
+     * throwException parameter, and complete duplication configuration with server protocol update in case of false
+     * throwException parameter.
+     *
+     * @param bool       $throwException The expected exception state
+     * @param MockObject $request        The request object returned by the duplicate method in case of no exception
+     *                                   expected
+     * @param string     $protocol       The protocol number expected by the duplication of the server parameter
+     *
+     * @return array
+     */
+    private function guessRequestArgByProtocol(bool $throwException, MockObject $request, string $protocol) : array
+    {
+        $testCase = $this->getTestCase();
+
+        if ($throwException) {
+            return [
+                [
+                    'expects' => $testCase->never(),
+                    'method' => 'duplicate'
+                ]
+            ];
+        }
+
+        return [
+            [
+                'expects' => $testCase->once(),
+                'method' => 'duplicate',
+                'with' => [
+                    $testCase->equalTo([]),
+                    $testCase->equalTo([]),
+                    $testCase->equalTo([]),
+                    $testCase->equalTo([]),
+                    $testCase->equalTo([]),
+                    $testCase->equalTo(
+                        [
+                            'SERVER_PROTOCOL' => $protocol
+                        ]
+                    )
+                ],
+                'willReturn' => $request
+            ]
+        ];
+    }
 }

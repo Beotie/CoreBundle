@@ -65,12 +65,12 @@ trait DuplicationComponent
             $$parameter = $this->httpRequest->{$parameter}->all();
 
             if (isset($param[$parameter])) {
-                array_replace($$parameter, $param[$parameter]);
+                $$parameter = array_replace($$parameter, $param[$parameter]);
             }
         }
 
         $request = $this->httpRequest->duplicate($query, $request, $attributes, $cookies, $files, $server);
 
-        return new static($request);
+        return new static($request, $this->fileFactory);
     }
 }

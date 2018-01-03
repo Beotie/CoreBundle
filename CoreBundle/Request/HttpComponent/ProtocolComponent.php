@@ -56,7 +56,7 @@ trait ProtocolComponent
      */
     public function withProtocolVersion($version)
     {
-        if (!preg_match('/([0-9]+\.?)+/', $version)) {
+        if (!preg_match('/^([0-9]+\.?)+$/', $version)) {
             throw new \RuntimeException(
                 'The version string MUST contain only the HTTP version number (e.g., "1.1", "1.0").'
             );

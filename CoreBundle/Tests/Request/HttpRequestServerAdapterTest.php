@@ -27,6 +27,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use PHPUnit\Framework\MockObject\MockObject;
 use Beotie\CoreBundle\Tests\Request\HttpRequestServerAdapter as TestTrait;
 use Symfony\Component\OptionsResolver\Exception\InvalidArgumentException;
+use PHPUnit\Framework\MockObject\Builder\InvocationMocker;
 
 /**
  * HttpRequestServerAdapter test
@@ -152,6 +153,10 @@ class HttpRequestServerAdapterTest extends TestCase
         $this->createInvocation($httpRequest, $parameters);
 
         $fallbackBagOptions = ['all' => []];
+        $attributes = $this->createMock(ParameterBag::class);
+        $this->createInvocation($attributes, ($bagOptions['attributes'] ?? $fallbackBagOptions));
+        $httpRequest->attributes = $attributes;
+
         $cookies = $this->createMock(ParameterBag::class);
         $this->createInvocation($cookies, ($bagOptions['cookies'] ?? $fallbackBagOptions));
         $httpRequest->cookies = $cookies;
@@ -256,10 +261,40 @@ class HttpRequestServerAdapterTest extends TestCase
                     continue;
                 }
 
-                $invoker->{$key}($value);
+                $this->attachInvocationArgument($invoker, $key, $value);
             }
         }
 
+        return;
+    }
+
+    /**
+     * Attach invocation argument
+     *
+     * Call the argumentName method of the given invoker with the given argumentValue. If the argumentName is prefixed
+     * by 'with' and the value is an array, the argumentValue will be evaluated as an array of function arguments.
+     * Special invokation is reached on 'willReturnSelf' or 'withAnyParameters' argumentName; In this case, the method
+     * is invoked without any paramters if argumentValue is true.
+     *
+     * @param InvocationMocker $invoker       The invokation mocker that will be configured
+     * @param string           $argumentName  The method name to be called
+     * @param mixed            $argumentValue The method argument
+     *
+     * @return void
+     */
+    private function attachInvocationArgument(InvocationMocker $invoker, string $argumentName, $argumentValue) : void
+    {
+        if (in_array($argumentName, ['willReturnSelf', 'withAnyParameters']) && (bool)$argumentValue) {
+            $invoker->{$argumentName}();
+            return;
+        }
+
+        if (preg_match('/^with/', $argumentName) && is_array($argumentValue)) {
+            call_user_func_array([$invoker, $argumentName], $argumentValue);
+            return;
+        }
+
+        $invoker->{$argumentName}($argumentValue);
         return;
     }
 
