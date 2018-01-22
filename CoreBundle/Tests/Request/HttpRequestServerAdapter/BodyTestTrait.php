@@ -16,15 +16,15 @@ declare(strict_types=1);
  */
 namespace Beotie\CoreBundle\Tests\Request\HttpRequestServerAdapter;
 
-use Beotie\CoreBundle\Request\File\Factory\EmbeddedFileFactoryInterface;
-use Beotie\CoreBundle\Request\HttpRequestServerAdapter;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Beotie\CoreBundle\Request\File\Factory\EmbeddedFileFactoryInterface;
+use Beotie\CoreBundle\Request\HttpRequestServerAdapter;
 
 /**
- * Cookie test trait
+ * Body test trait
  *
- * This trait is used to validate the HttpRequestServerAdapter instance regarding the cookie logic
+ * This trait is used to validate the HttpRequestServerAdapter instance regarding the body logic
  *
  * @category Test
  * @package  Beotie_Core_Bundle
@@ -32,70 +32,23 @@ use PHPUnit\Framework\TestCase;
  * @license  MIT <https://opensource.org/licenses/MIT>
  * @link     http://cscfa.fr
  */
-trait CookieTestTrait
+trait BodyTestTrait
 {
     /**
-     * Test getCookieParams
+     * Test getBody
      *
-     * This method validate the HttpRequestServerAdapter::getCookieParams method
-     *
-     * @return void
-     */
-    public function testGetCookieParams()
-    {
-        $cookies = ['key' => 'value'];
-        $request = $this->getRequest([], ['cookies' => ['all' => $cookies]]);
-
-        $fileFactory = $this->createMock(EmbeddedFileFactoryInterface::class);
-        $instance = new HttpRequestServerAdapter($request, $fileFactory);
-
-        $this->getTestCase()->assertEquals($cookies, $instance->getCookieParams());
-    }
-
-    /**
-     * Test withCookieParams
-     *
-     * This method validate the HttpRequestServerAdapter::withCookieParams method
+     * This method validate the HttpRequestServerAdapter::getBody method
      *
      * @return void
      */
-    public function testWithCookieParams()
+    public function testGetBody()
     {
-        $request = $this->getRequest(
-            [],
-            [
-                'cookies' =>
-                [
-                    [
-                        'expects' => $this->getTestCase()->exactly(2),
-                        'method' => 'has',
-                        'withConsecutive' => [
-                            $this->getTestCase()->equalTo('alpha'),
-                            $this->getTestCase()->equalTo('beta')
-                        ],
-                        'willReturnOnConsecutiveCalls' => [true, false]
-                    ],
-                    [
-                        'expects' => $this->getTestCase()->once(),
-                        'method' => 'set',
-                        'with' => [
-                            $this->getTestCase()->equalTo('beta'),
-                            $this->getTestCase()->equalTo('betaVal')
-                        ]
-                    ]
-                ]
-            ]
-        );
+        $this->getTestCase()->expectException(\LogicException::class);
 
         $fileFactory = $this->createMock(EmbeddedFileFactoryInterface::class);
-        $instance = new HttpRequestServerAdapter($request, $fileFactory);
+        $instance = new HttpRequestServerAdapter($this->getRequest(), $fileFactory);
 
-        $result = $instance->withCookieParams(['alpha' => 'alphaVal', 'beta' => 'betaVal']);
-
-        $reflex = new \ReflectionProperty(HttpRequestServerAdapter::class, 'httpRequest');
-        $reflex->setAccessible(true);
-
-        $this->getTestCase()->assertNotSame($reflex->getValue($instance), $reflex->getValue($result));
+        $instance->getBody();
     }
 
     /**

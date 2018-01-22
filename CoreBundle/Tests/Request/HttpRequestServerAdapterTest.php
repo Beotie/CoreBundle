@@ -51,7 +51,8 @@ class HttpRequestServerAdapterTest extends TestCase
         TestTrait\HeaderTestTrait,
         TestTrait\FileTestTrait,
         TestTrait\DuplicationTestTrait,
-        TestTrait\CookieTestTrait;
+        TestTrait\CookieTestTrait,
+        TestTrait\BodyTestTrait;
 
     /**
      * Test construct
