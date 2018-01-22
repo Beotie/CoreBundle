@@ -40,14 +40,16 @@ class RequestUploadedFileFactoryTest extends TestCase
      *
      * This method is used to validate the FileInfoStreamFactory::getArrayKey method
      *
-     * @return                               void
-     * @SuppressWarnings(PHPMD.StaticAccess)
+     * @return void
      */
     public function testGetArrayKey() : void
     {
+        $streamFactory = $this->createMock(AbstractEmbeddedStreamFactory::class);
+        $instance = new RequestUploadedFileFactory($streamFactory);
+
         $this->assertEquals(
             'inner_content',
-            RequestUploadedFileFactory::getArrayKey()
+            $instance->getArrayKey()
         );
 
         return;
@@ -58,8 +60,7 @@ class RequestUploadedFileFactoryTest extends TestCase
      *
      * This method is used to validate the FileInfoStreamFactory::getUploadFile method
      *
-     * @return                               void
-     * @SuppressWarnings(PHPMD.StaticAccess)
+     * @return void
      */
     public function testGetUploadFile() : void
     {
@@ -69,7 +70,7 @@ class RequestUploadedFileFactoryTest extends TestCase
 
         $this->assertEquals(
             new RequestUploadedFileAdapter($uploadedFile, $streamFactory),
-            $instance->getUploadFile([RequestUploadedFileFactory::getArrayKey() => $uploadedFile])
+            $instance->getUploadFile([$instance->getArrayKey() => $uploadedFile])
         );
     }
 
@@ -78,8 +79,7 @@ class RequestUploadedFileFactoryTest extends TestCase
      *
      * This method is used to validate the FileInfoStreamFactory::getUploadFile method in case of wrong type usage
      *
-     * @return                               void
-     * @SuppressWarnings(PHPMD.StaticAccess)
+     * @return void
      */
     public function testGetUploadedFileTypeError() : void
     {
@@ -97,7 +97,7 @@ class RequestUploadedFileFactoryTest extends TestCase
         $streamFactory = $this->createMock(AbstractEmbeddedStreamFactory::class);
         $instance = new RequestUploadedFileFactory($streamFactory);
 
-        $instance->getUploadFile([RequestUploadedFileFactory::getArrayKey() => $uploadedFile]);
+        $instance->getUploadFile([$instance->getArrayKey() => $uploadedFile]);
 
         return;
     }

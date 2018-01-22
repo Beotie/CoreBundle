@@ -62,7 +62,6 @@ trait MethodTestTrait
      * @param string $method The method to use as method argument
      *
      * @return       void
-     * @covers       Beotie\CoreBundle\Request\HttpRequestServerAdapter::withMethod
      * @dataProvider methodProvider
      */
     public function testWithMethod(string $method) : void
@@ -93,7 +92,6 @@ trait MethodTestTrait
      *                       into the Request instance
      *
      * @return       void
-     * @covers       Beotie\CoreBundle\Request\HttpRequestServerAdapter::getMethod
      * @dataProvider methodProvider
      */
     public function testGetMethod(string $method) : void

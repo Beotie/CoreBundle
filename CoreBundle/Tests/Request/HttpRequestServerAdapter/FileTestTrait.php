@@ -41,7 +41,6 @@ trait FileTestTrait
      * This method validate the HttpRequestServerAdapter::withUploadedFiles method
      *
      * @return void
-     * @covers Beotie\CoreBundle\Request\HttpRequestServerAdapter::withUploadedFiles
      */
     public function testWithUploadedFiles()
     {
@@ -91,8 +90,6 @@ trait FileTestTrait
      * This method validate the HttpRequestServerAdapter::getUploadedFiles method
      *
      * @return void
-     * @covers Beotie\CoreBundle\Request\HttpRequestServerAdapter::getUploadedFiles
-     * @covers Beotie\CoreBundle\Request\HttpRequestServerAdapter::filesToUploadedStream
      */
     public function testGetUploadedFiles()
     {

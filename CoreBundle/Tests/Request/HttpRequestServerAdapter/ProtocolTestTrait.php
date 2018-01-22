@@ -64,7 +64,6 @@ trait ProtocolTestTrait
      * @param bool   $throwException The expecting exception state of the method call
      *
      * @return       void
-     * @covers       Beotie\CoreBundle\Request\HttpRequestServerAdapter::withProtocolVersion
      * @dataProvider protocolVersionProvider
      */
     public function testWithProtocolVersion(string $protocol, bool $throwException) : void
@@ -100,7 +99,6 @@ trait ProtocolTestTrait
      * This method validate the HttpRequestServerAdapter::getProtocolVersion method
      *
      * @return void
-     * @covers Beotie\CoreBundle\Request\HttpRequestServerAdapter::getProtocolVersion
      */
     public function testGetProtocolVersion() : void
     {

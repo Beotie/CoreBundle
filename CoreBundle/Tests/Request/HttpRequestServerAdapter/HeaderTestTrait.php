@@ -56,7 +56,6 @@ trait HeaderTestTrait
      * This method validate the HttpRequestServerAdapter::withHeader method
      *
      * @return void
-     * @covers Beotie\CoreBundle\Request\HttpRequestServerAdapter::withHeader
      */
     public function testWithHeader()
     {
@@ -102,7 +101,6 @@ trait HeaderTestTrait
      * This method validate the HttpRequestServerAdapter::getHeaders method
      *
      * @return void
-     * @covers Beotie\CoreBundle\Request\HttpRequestServerAdapter::getHeaders
      */
     public function testGetHeaders()
     {
@@ -123,7 +121,6 @@ trait HeaderTestTrait
      * @param string $header The header key to be used at method call
      *
      * @return       void
-     * @covers       Beotie\CoreBundle\Request\HttpRequestServerAdapter::hasHeader
      * @dataProvider headerProvider
      */
     public function testHasHeader(string $header)
@@ -179,7 +176,6 @@ trait HeaderTestTrait
      * This method validate the HttpRequestServerAdapter::withAddedHeader method
      *
      * @return void
-     * @covers Beotie\CoreBundle\Request\HttpRequestServerAdapter::withAddedHeader
      */
     public function testWithAddedHeader()
     {
@@ -229,7 +225,6 @@ trait HeaderTestTrait
      * @param string|array $value  The header value to be injected into the header bag
      *
      * @return       void
-     * @covers       Beotie\CoreBundle\Request\HttpRequestServerAdapter::getHeader
      * @dataProvider headerProvider
      */
     public function testGetHeader(string $header, $value) : void
@@ -291,7 +286,6 @@ trait HeaderTestTrait
      * @param string       $expectedResult The expected result of the method call
      *
      * @return       void
-     * @covers       Beotie\CoreBundle\Request\HttpRequestServerAdapter::getHeaderLine
      * @dataProvider headerProvider
      */
     public function testGetHeaderLine(string $header, $value, string $expectedResult) : void
@@ -343,7 +337,6 @@ trait HeaderTestTrait
      * This method validate the HttpRequestServerAdapter::withoutHeader method
      *
      * @return void
-     * @covers Beotie\CoreBundle\Request\HttpRequestServerAdapter::withoutHeader
      */
     public function testWithoutHeader() : void
     {
