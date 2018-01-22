@@ -53,7 +53,7 @@ trait DuplicationComponent
      */
     protected function duplicate(array $param = [], bool $force = false) : HttpRequestServerAdapter
     {
-        return new static($this->requestDuplicate($param), $this->fileFactory, $force);
+        return new static($this->requestDuplicate($param, $force), $this->fileFactory);
     }
 
     /**
@@ -80,7 +80,7 @@ trait DuplicationComponent
         foreach ($parameters as $parameter) {
             $$parameter = $this->httpRequest->{$parameter}->all();
 
-            if (isset($param[$parameter]) && !$force) {
+            if (isset($param[$parameter])) {
                 $$parameter = $this->mergeParam($$parameter, $param[$parameter], $force);
             }
         }
