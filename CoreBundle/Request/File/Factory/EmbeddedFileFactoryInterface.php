@@ -36,5 +36,5 @@ interface EmbeddedFileFactoryInterface extends UploadFileFactoryInterface
      *
      * @return string
      */
-    public static function getArrayKey() : string;
+    public function getArrayKey() : string;
 }

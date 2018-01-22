@@ -59,7 +59,7 @@ class RequestUploadedFileFactory implements EmbeddedFileFactoryInterface
      *
      * @return string
      */
-    public static function getArrayKey() : string
+    public function getArrayKey() : string
     {
         return self::ARRAY_KEY;
     }

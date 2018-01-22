@@ -47,12 +47,13 @@ trait DuplicationComponent
      * This method duplicate the current request and override the specified parameters
      *
      * @param array $param The parameters to override
+     * @param bool  $force Hard replace the parameter, act as replace completely
      *
      * @return HttpRequestServerAdapter
      */
-    protected function duplicate(array $param = []) : HttpRequestServerAdapter
+    protected function duplicate(array $param = [], bool $force = false) : HttpRequestServerAdapter
     {
-        return new static($this->requestDuplicate($param), $this->fileFactory);
+        return new static($this->requestDuplicate($param), $this->fileFactory, $force);
     }
 
     /**
@@ -61,10 +62,11 @@ trait DuplicationComponent
      * This method duplicate the current inner request and override the specified parameters
      *
      * @param array $param The parameters to override
+     * @param bool  $force Hard replace the parameter, act as replace completely
      *
      * @return Request
      */
-    protected function requestDuplicate(array $param = []) : Request
+    protected function requestDuplicate(array $param = [], bool $force = false) : Request
     {
         $query = null;
         $request = null;
@@ -78,11 +80,32 @@ trait DuplicationComponent
         foreach ($parameters as $parameter) {
             $$parameter = $this->httpRequest->{$parameter}->all();
 
-            if (isset($param[$parameter])) {
-                $$parameter = array_replace($$parameter, $param[$parameter]);
+            if (isset($param[$parameter]) && !$force) {
+                $$parameter = $this->mergeParam($$parameter, $param[$parameter], $force);
             }
         }
 
         return $this->httpRequest->duplicate($query, $request, $attributes, $cookies, $files, $server);
+    }
+
+    /**
+     * Merge param
+     *
+     * Return a merge between the original parameter and the newValue parameter if the force parameter is set to false.
+     * Otherwise, return newValue parameter.
+     *
+     * @param array $original  The original value to merge
+     * @param array $newValues The new values to merge
+     * @param bool  $force     The merging strategy, as merge or replace
+     *
+     * @return array
+     */
+    private function mergeParam(array $original, array $newValues, bool $force) : array
+    {
+        if (!$force) {
+            return array_replace($original, $newValues);
+        }
+
+        return $newValues;
     }
 }

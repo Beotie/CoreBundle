@@ -126,11 +126,12 @@ trait AttributeComponent
     /**
      * Duplicate
      *
-     * This method duplicate the current inner request and override the specified parameters
+     * This method duplicate the current request and override the specified parameters
      *
      * @param array $param The parameters to override
+     * @param bool  $force Hard replace the parameter, act as replace completely
      *
      * @return HttpRequestServerAdapter
      */
-    protected abstract function duplicate(array $param = []) : HttpRequestServerAdapter;
+    protected abstract function duplicate(array $param = [], bool $force = false) : HttpRequestServerAdapter;
 }

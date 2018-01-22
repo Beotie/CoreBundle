@@ -19,6 +19,7 @@ namespace Beotie\CoreBundle\Request\HttpComponent;
 use Symfony\Component\HttpFoundation\Request;
 use Beotie\CoreBundle\Request\File\Factory\EmbeddedFileFactoryInterface;
 use Beotie\CoreBundle\Request\File\RequestUploadedFileAdapter;
+use Beotie\CoreBundle\Request\HttpRequestServerAdapter;
 
 /**
  * File component
@@ -65,11 +66,7 @@ trait FileComponent
      */
     public function withUploadedFiles(array $uploadedFiles)
     {
-        $httpRequest = clone $this->httpRequest;
-
-        $httpRequest->files->replace($uploadedFiles);
-
-        return new static($httpRequest);
+        return $this->duplicate(['files' => $uploadedFiles], true);
     }
 
     /**
@@ -103,11 +100,6 @@ trait FileComponent
         $resultFiles = [];
 
         foreach ($files as $key => $file) {
-            if (is_array($file)) {
-                $resultFiles[$key] = $this->filesToStream($file);
-                continue;
-            }
-
             $resultFiles[$key] = $this->fileFactory->getUploadFile(
                 [
                     $this->fileFactory->getArrayKey() => $file
@@ -117,4 +109,16 @@ trait FileComponent
 
         return $resultFiles;
     }
+
+    /**
+     * Duplicate
+     *
+     * This method duplicate the current request and override the specified parameters
+     *
+     * @param array $param The parameters to override
+     * @param bool  $force Hard replace the parameter, act as replace completely
+     *
+     * @return HttpRequestServerAdapter
+     */
+    protected abstract function duplicate(array $param = [], bool $force = false) : HttpRequestServerAdapter;
 }

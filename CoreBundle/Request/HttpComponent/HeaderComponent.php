@@ -242,8 +242,9 @@ trait HeaderComponent
      * This method duplicate the current inner request and override the specified parameters
      *
      * @param array $param The parameters to override
+     * @param bool  $force Hard replace the parameter, act as replace completely
      *
      * @return Request
      */
-    protected abstract function requestDuplicate(array $param = []) : Request;
+    protected abstract function requestDuplicate(array $param = [], bool $force = false) : Request;
 }
