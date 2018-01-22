@@ -83,6 +83,6 @@ trait CookieComponent
             }
         }
 
-        return new static($httpRequest);
+        return new static($httpRequest, $this->fileFactory);
     }
 }

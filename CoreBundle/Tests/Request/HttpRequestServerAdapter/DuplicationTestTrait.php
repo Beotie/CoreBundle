@@ -21,7 +21,7 @@ use Beotie\CoreBundle\Request\HttpComponent\DuplicationComponent;
 use PHPUnit\Framework\TestCase;
 
 /**
- * File test trait
+ * Duplication test trait
  *
  * This trait is used to validate the HttpRequestServerAdapter instance regarding duplication logic
  *
