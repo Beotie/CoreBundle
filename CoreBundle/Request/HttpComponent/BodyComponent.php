@@ -18,6 +18,7 @@ namespace Beotie\CoreBundle\Request\HttpComponent;
 
 use Symfony\Component\HttpFoundation\Request;
 use Psr\Http\Message\StreamInterface;
+use Beotie\CoreBundle\Request\HttpRequestServerAdapter;
 
 /**
  * Body component
@@ -70,16 +71,10 @@ trait BodyComponent
         $body->rewind();
         $streamContent = $body->getContents();
 
-        $request = new Request(
-            $this->httpRequest->query->all(),
-            mb_parse_str($streamContent),
-            $this->getAttributes(),
-            $this->httpRequest->cookies->all(),
-            $this->httpRequest->files->all(),
-            $this->httpRequest->headers->all()
-        );
+        $dataArray = [];
+        mb_parse_str($streamContent, $dataArray);
 
-        return new static($request);
+        return $this->duplicate(['request' => $dataArray], true);
     }
 
     /**
@@ -133,15 +128,18 @@ trait BodyComponent
      */
     public function withParsedBody($data)
     {
-        $request = new Request(
-            $this->httpRequest->query->all(),
-            $data,
-            $this->getAttributes(),
-            $this->httpRequest->cookies->all(),
-            $this->httpRequest->files->all(),
-            $this->httpRequest->headers->all()
-        );
-
-        return new static($request);
+        return $this->duplicate(['request' => $data], true);
     }
+
+    /**
+     * Duplicate
+     *
+     * This method duplicate the current request and override the specified parameters
+     *
+     * @param array $param The parameters to override
+     * @param bool  $force Hard replace the parameter, act as replace completely
+     *
+     * @return HttpRequestServerAdapter
+     */
+    protected abstract function duplicate(array $param = [], bool $force = false) : HttpRequestServerAdapter;
 }

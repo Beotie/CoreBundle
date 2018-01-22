@@ -20,6 +20,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Beotie\CoreBundle\Request\File\Factory\EmbeddedFileFactoryInterface;
 use Beotie\CoreBundle\Request\HttpRequestServerAdapter;
+use Psr\Http\Message\StreamInterface;
 
 /**
  * Body test trait
@@ -49,6 +50,47 @@ trait BodyTestTrait
         $instance = new HttpRequestServerAdapter($this->getRequest(), $fileFactory);
 
         $instance->getBody();
+    }
+
+    /**
+     * Test withBody
+     *
+     * This method validate the HttpRequestServerAdapter::withBody method
+     *
+     * @return void
+     */
+    public function testWithBody()
+    {
+        $resultRequest = $this->getRequest();
+        $request = $this->getRequest(
+            [
+                [
+                    'expects' => $this->getTestCase()->once(),
+                    'method' => 'duplicate',
+                    'with' => [
+                        $this->getTestCase()->anything(),
+                        $this->equalTo(['data'=>'dataValue', 'test'=>1])
+                    ],
+                    'willReturn' => $resultRequest
+                ]
+            ]
+        );
+
+        $fileFactory = $this->createMock(EmbeddedFileFactoryInterface::class);
+        $instance = new HttpRequestServerAdapter($request, $fileFactory);
+
+        $body = $this->createMock(StreamInterface::class);
+        $body->expects($this->once())
+            ->method('rewind');
+        $body->expects($this->once())
+            ->method('getContents')
+            ->willReturn('data=dataValue&test=1');
+
+        $result = $instance->withBody($body);
+        $reflex = new \ReflectionProperty(HttpRequestServerAdapter::class, 'httpRequest');
+        $reflex->setAccessible(true);
+
+        $this->getTestCase()->assertSame($resultRequest, $reflex->getValue($result));
     }
 
     /**
