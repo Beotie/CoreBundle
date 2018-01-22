@@ -74,7 +74,7 @@ trait BodyComponent
         $dataArray = [];
         mb_parse_str($streamContent, $dataArray);
 
-        return $this->duplicate(['request' => $dataArray], true);
+        return $this->withParsedBody($dataArray);
     }
 
     /**

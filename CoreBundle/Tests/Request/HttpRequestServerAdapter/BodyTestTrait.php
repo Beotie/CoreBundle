@@ -112,6 +112,42 @@ trait BodyTestTrait
     }
 
     /**
+     * Test withParsedBody
+     *
+     * This method validate the HttpRequestServerAdapter::withParsedBody method
+     *
+     * @return void
+     */
+    public function testWithParsedBody()
+    {
+        $data = ['data'=>'dataValue', 'test'=>1];
+        $resultRequest = $this->getRequest();
+        $request = $this->getRequest(
+            [
+                [
+                    'expects' => $this->getTestCase()->once(),
+                    'method' => 'duplicate',
+                    'with' => [
+                        $this->getTestCase()->anything(),
+                        $this->equalTo($data)
+                    ],
+                    'willReturn' => $resultRequest
+                ]
+            ]
+        );
+
+        $fileFactory = $this->createMock(EmbeddedFileFactoryInterface::class);
+        $instance = new HttpRequestServerAdapter($request, $fileFactory);
+
+
+        $result = $instance->withParsedBody($data);
+        $reflex = new \ReflectionProperty(HttpRequestServerAdapter::class, 'httpRequest');
+        $reflex->setAccessible(true);
+
+        $this->getTestCase()->assertSame($resultRequest, $reflex->getValue($result));
+    }
+
+    /**
      * Get request
      *
      * Return an instance of Request mock that contain a ParameterBag mock in cookies, query and request properties
