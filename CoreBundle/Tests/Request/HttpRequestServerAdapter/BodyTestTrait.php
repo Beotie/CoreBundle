@@ -94,6 +94,24 @@ trait BodyTestTrait
     }
 
     /**
+     * Test getParsedBody
+     *
+     * This method validate the HttpRequestServerAdapter::getParsedBody method
+     *
+     * @return void
+     */
+    public function testGetParsedBody()
+    {
+        $content = 'here is my content';
+        $request = $this->getRequest(['getContent' => $content]);
+
+        $fileFactory = $this->createMock(EmbeddedFileFactoryInterface::class);
+        $instance = new HttpRequestServerAdapter($request, $fileFactory);
+
+        $this->getTestCase()->assertEquals($content, $instance->getParsedBody());
+    }
+
+    /**
      * Get request
      *
      * Return an instance of Request mock that contain a ParameterBag mock in cookies, query and request properties
